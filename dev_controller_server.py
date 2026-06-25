@@ -100,7 +100,7 @@ def start_server():
 
     server_process = subprocess.Popen(
 
-        ["docker", "compose", "up"],
+        ["docker", "compose", "up", "--build"],
 
         cwd=PROJECT_PATH,
 

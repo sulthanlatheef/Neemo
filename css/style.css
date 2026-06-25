@@ -4898,4 +4898,54 @@ false
     box-shadow:
         0 0 12px #22d3ee;
 }
+.json-line{
+    display:flex;
+    align-items:flex-start;
+}
+
+.json-line-content{
+    white-space:pre;
+}
+.json-line-content{
+    white-space:pre;
+    flex:1;
+}
+.json-line{
+
+    display:flex;
+
+    align-items:flex-start;
+
+    min-height:24px;
+}
+.json-line-number{
+
+    width:60px;
+
+    flex-shrink:0;
+
+    text-align:right;
+
+    padding-right:16px;
+}
+.json-line-content{
+
+    flex:1;
+
+    white-space:pre;
+}
+.json-line-content{
+
+    display:block !important;
+
+    align-items:unset !important;
+
+    justify-content:unset !important;
+
+    padding:0 !important;
+
+    margin:0 !important;
+
+    line-height:24px;
+}
 

@@ -4,6 +4,18 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 header("Content-Type: application/json");
+require_once __DIR__ . '/vendor/autoload.php';
+
+use WebSocket\Client;
+
+const MINT_URL =
+    "https://formsaiplugin.unysite.com/figmaimport/auth/token";
+
+const MINT_SECRET =
+    "Xm3K8_nUjqn1Z09HG0oFxQ1VTyAazITJh81t7ixlHDA";
+
+const WS_URL =
+    "ws://localhost:5000/figmaimport/convert/ws";
 
 $action = $_GET['action'] ?? '';
 
@@ -39,6 +51,72 @@ function sendGetRequest($url)
     }
 
     return $response;
+}
+function getFreshToken()
+{
+    $ch = curl_init();
+
+    curl_setopt_array($ch, [
+
+        CURLOPT_URL => MINT_URL,
+
+        CURLOPT_POST => true,
+
+        CURLOPT_RETURNTRANSFER => true,
+
+        CURLOPT_HTTPHEADER => [
+            "X-Mint-Secret: " . MINT_SECRET,
+            "Content-Type: application/json"
+        ],
+
+        CURLOPT_SSL_VERIFYPEER => false,
+        CURLOPT_SSL_VERIFYHOST => false
+
+    ]);
+
+    $response = curl_exec($ch);
+
+    if (curl_errno($ch)) {
+        throw new Exception(
+            curl_error($ch)
+        );
+    }
+
+    curl_close($ch);
+
+    $data = json_decode(
+        $response,
+        true
+    );
+
+    $token =
+        $data["access_token"]
+        ?? $data["token"]
+        ?? $data["jwt"]
+        ?? null;
+
+    if (!$token) {
+        throw new Exception(
+            "Token not found"
+        );
+    }
+
+    return $token;
+}
+
+function createWebSocketClient()
+{
+    $token = getFreshToken();
+
+    return new Client(
+        WS_URL,
+        [
+            "timeout" => 300,
+            "headers" => [
+                "Authorization" => "Bearer {$token}"
+            ]
+        ]
+    );
 }
 
 /*
@@ -163,52 +241,82 @@ if ($action === 'start_nemo') {
 
 if ($action === 'load_frames') {
 
-    $input = json_decode(
-        file_get_contents("php://input"),
-        true
-    );
+    try {
 
-    $figmaUrl = $input['figma_url'] ?? '';
+        $input = json_decode(
+            file_get_contents("php://input"),
+            true
+        );
 
-    $payload = json_encode([
-        "figma_url" => $figmaUrl
-    ]);
+        $figmaUrl =
+            $input['figma_url'] ?? '';
 
-    $ch = curl_init();
+        $client =
+            createWebSocketClient();
 
-    curl_setopt_array($ch, [
+        $client->send(
+            json_encode([
+                "type" => "submit_url",
+                "request_id" => uniqid(),
+                "figma_url" => $figmaUrl
+            ])
+        );
 
-        CURLOPT_URL =>
-            $fastapiBaseUrl . "/submiturl",
+        while (true) {
 
-        CURLOPT_RETURNTRANSFER => true,
+            $message = json_decode(
+                $client->receive(),
+                true
+            );
 
-        CURLOPT_POST => true,
+            $type =
+                $message["type"] ?? "";
 
-        CURLOPT_HTTPHEADER => [
-            "Content-Type: application/json"
-        ],
+            if ($type === "ping") {
 
-        CURLOPT_POSTFIELDS => $payload
+                $client->send(
+                    json_encode([
+                        "type" => "pong"
+                    ])
+                );
 
-    ]);
+                continue;
+            }
 
-    $response = curl_exec($ch);
+            if ($type === "error") {
 
-    if (curl_errno($ch)) {
+                echo json_encode([
+                    "status" => "error",
+                    "message" =>
+                        $message["message"]
+                        ?? "Unknown error"
+                ]);
+
+                exit;
+            }
+
+            if ($type === "submit_url_response") {
+
+                echo json_encode(
+                    $message["result"]
+                );
+
+                exit;
+            }
+        }
+
+    } catch (Throwable $e) {
+
+        http_response_code(500);
 
         echo json_encode([
-            "error" => curl_error($ch)
+            "status" => "error",
+            "message" => $e->getMessage()
         ]);
-
-        exit;
     }
-
-    echo $response;
 
     exit;
 }
-
 /*
 |--------------------------------------------------------------------------
 | GENERATE JSON
@@ -217,60 +325,87 @@ if ($action === 'load_frames') {
 
 if ($action === 'generate_json') {
 
-    // REMOVE PHP TIME LIMIT
     set_time_limit(0);
     ini_set('max_execution_time', 0);
 
-    $input = json_decode(
-        file_get_contents("php://input"),
-        true
-    );
+    try {
 
-    $payload = json_encode([
+        $input = json_decode(
+            file_get_contents("php://input"),
+            true
+        );
 
-        "file_key" => $input['file_key'] ?? '',
+        $fileKey =
+            $input['file_key'] ?? '';
 
-        "frame_name" => $input['frame_name'] ?? '',
+        $frameName =
+            $input['frame_name'] ?? '';
 
-        "frame_id" => $input['frame_id'] ?? ''
+        $client =
+            createWebSocketClient();
 
-    ]);
+        $client->send(
+            json_encode([
+                "type" => "convert",
+                "request_id" => uniqid(),
+                "file_key" => $fileKey,
+                "frame_name" => $frameName
+            ])
+        );
 
-    $ch = curl_init();
+        while (true) {
 
-    curl_setopt_array($ch, [
+            $message = json_decode(
+                $client->receive(),
+                true
+            );
 
-        CURLOPT_URL =>
-            $fastapiBaseUrl . "/selected_frame",
+            $type =
+                $message["type"] ?? "";
 
-        CURLOPT_RETURNTRANSFER => true,
+            if ($type === "ping") {
 
-        CURLOPT_POST => true,
+                $client->send(
+                    json_encode([
+                        "type" => "pong"
+                    ])
+                );
 
-        CURLOPT_HTTPHEADER => [
-            "Content-Type: application/json"
-        ],
+                continue;
+            }
 
-        CURLOPT_POSTFIELDS => $payload,
+            if ($type === "error") {
 
-        // REMOVE CURL TIMEOUT
-        CURLOPT_TIMEOUT => 0,
-        CURLOPT_CONNECTTIMEOUT => 0
+                echo json_encode([
+                    "status" => "error",
+                    "message" =>
+                        $message["message"]
+                        ?? "Unknown error"
+                ]);
 
-    ]);
+                exit;
+            }
 
-    $response = curl_exec($ch);
+            if ($type === "convert_response") {
 
-    if (curl_errno($ch)) {
+                echo json_encode(
+                    $message["result"],
+                    JSON_UNESCAPED_UNICODE
+                );
+
+                exit;
+            }
+        }
+
+    } catch (Throwable $e) {
+
+        http_response_code(500);
 
         echo json_encode([
-            "error" => curl_error($ch)
+            "status" => "error",
+            "message" => $e->getMessage()
         ]);
-
-        exit;
     }
-
-    echo $response;
 
     exit;
 }

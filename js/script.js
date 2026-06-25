@@ -184,6 +184,113 @@ function searchJson(){
 
     renderVirtualRows();
 }
+
+function searchNormalJson(){
+
+    const query =
+        jsonSearchInput.value
+        .trim()
+        .toLowerCase();
+
+    normalSearchMatches = [];
+
+    normalMatchIndex = -1;
+
+   
+   if(!query){
+
+    jsonSearchCount.textContent =
+        "0 / 0";
+
+    renderNormalRows();
+
+    return;
+}
+
+   normalLines.forEach(
+
+    (line,index)=>{
+
+        if(
+
+            line
+            .toLowerCase()
+            .includes(query)
+
+        ){
+
+            normalSearchMatches.push(
+                index
+            );
+        }
+    }
+);
+
+  if(
+    normalSearchMatches.length
+){
+
+    normalMatchIndex = 0;
+
+    renderNormalRows();
+
+    jumpToNormalMatch(0);
+}
+
+    updateNormalCounter();
+}
+function updateNormalCounter(){
+
+    if(
+        !normalSearchMatches.length
+    ){
+
+        jsonSearchCount.textContent =
+            "0 / 0";
+
+        return;
+    }
+
+    jsonSearchCount.textContent =
+
+        `${normalMatchIndex + 1}
+         /
+         ${normalSearchMatches.length}`;
+}
+
+    
+
+function jumpToNormalMatch(
+    index
+){
+
+    const rows =
+
+        modalResponseContainer
+        .querySelectorAll(
+            ".json-line"
+        );
+
+    const target =
+
+        rows[
+            normalSearchMatches[
+                index
+            ]
+        ];
+
+    if(!target){
+        return;
+    }
+
+    target.scrollIntoView({
+
+        behavior:"smooth",
+
+        block:"center"
+    });
+
+}
 function updateSearchCounter(){
 
     if(!searchMatches.length){
@@ -226,30 +333,64 @@ nextJsonMatch.addEventListener(
 
     ()=>{
 
-        if(
-            !searchMatches.length
-        ){
-            return;
+        const viewport =
+
+            document.getElementById(
+                "virtualViewport"
+            );
+
+        if(viewport){
+
+            if(
+                !searchMatches.length
+            ){
+                return;
+            }
+
+            currentMatchIndex++;
+
+            if(
+                currentMatchIndex >=
+                searchMatches.length
+            ){
+
+                currentMatchIndex = 0;
+            }
+
+            jumpToMatch(
+                currentMatchIndex
+            );
+
+            updateSearchCounter();
+
+            renderVirtualRows();
+
+        }else{
+
+            if(
+                !normalSearchMatches.length
+            ){
+                return;
+            }
+
+            normalMatchIndex++;
+
+            if(
+                normalMatchIndex >=
+                normalSearchMatches.length
+            ){
+
+                normalMatchIndex = 0;
+            }
+                renderNormalRows();
+
+            jumpToNormalMatch(
+                normalMatchIndex
+            );
+        
+
+            updateNormalCounter();
         }
-
-        currentMatchIndex++;
-
-        if(
-            currentMatchIndex >=
-            searchMatches.length
-        ){
-
-            currentMatchIndex = 0;
-        }
-
-        jumpToMatch(
-            currentMatchIndex
-        );
-
-        updateSearchCounter();
-
-        renderVirtualRows();
-
     }
 );
 prevJsonMatch.addEventListener(
@@ -258,37 +399,87 @@ prevJsonMatch.addEventListener(
 
     ()=>{
 
-        if(
-            !searchMatches.length
-        ){
-            return;
+        const viewport =
+
+            document.getElementById(
+                "virtualViewport"
+            );
+
+        if(viewport){
+
+            if(
+                !searchMatches.length
+            ){
+                return;
+            }
+
+            currentMatchIndex--;
+
+            if(
+                currentMatchIndex < 0
+            ){
+
+                currentMatchIndex =
+                    searchMatches.length - 1;
+            }
+
+            jumpToMatch(
+                currentMatchIndex
+            );
+
+            updateSearchCounter();
+
+            renderVirtualRows();
+
+        }else{
+
+            if(
+                !normalSearchMatches.length
+            ){
+                return;
+            }
+
+            normalMatchIndex--;
+
+            if(
+                normalMatchIndex < 0
+            ){
+
+                normalMatchIndex =
+                    normalSearchMatches.length - 1;
+            }
+            renderNormalRows();;
+
+            jumpToNormalMatch(
+                normalMatchIndex
+            );
+            
+
+            updateNormalCounter();
         }
-
-        currentMatchIndex--;
-
-        if(
-            currentMatchIndex < 0
-        ){
-
-            currentMatchIndex =
-                searchMatches.length - 1;
-        }
-
-        jumpToMatch(
-            currentMatchIndex
-        );
-
-        updateSearchCounter();
-
-        renderVirtualRows();
-
     }
 );
 jsonSearchInput.addEventListener(
 
     "input",
 
-    searchJson
+    ()=>{
+
+        const viewport =
+
+            document.getElementById(
+                "virtualViewport"
+            );
+
+        if(viewport){
+
+            searchJson();
+
+        }else{
+
+            searchNormalJson();
+        }
+    }
 );
     modalResponseContainer.addEventListener(
 
@@ -316,6 +507,7 @@ jsonSearchInput.addEventListener(
 
     let selectedIndex = null;
     let virtualLines = [];
+    let normalLines = [];
 
 const LINE_HEIGHT = 24;
 let searchMatches = [];
@@ -323,6 +515,9 @@ let searchMatches = [];
 let currentMatchIndex = -1;
 
 let currentSearchText = "";
+let normalSearchMatches = [];
+
+let normalMatchIndex = -1;
 
 const BUFFER_LINES = 0;
     let stickToBottom = false;
@@ -483,13 +678,38 @@ function syntaxHighlightJson(json){
         }
     );
 }
-function addLineNumbers(html){
+function addLineNumbers(
+    jsonText
+){
 
-    const lines = html.split("\n");
+    const lines =
+        jsonText.split("\n");
 
     return lines.map(
-        (line,index) =>
-            `<div class="json-line"><span class="json-line-number">${index + 1}</span><span class="json-line-content">${line || "&nbsp;"}</span></div>`
+
+        (line,index)=>`
+
+<div class="json-line">
+
+    <span class="json-line-number">
+        ${index + 1}
+    </span>
+
+    <span
+        class="json-line-content"
+        data-original="${encodeURIComponent(line)}"
+    >
+
+        ${
+            syntaxHighlightJson(
+                line
+            )
+        }
+
+    </span>
+
+</div>`
+
     ).join("");
 }
 function highlightSearchMatch(
@@ -528,6 +748,107 @@ function highlightSearchMatch(
 
         "___MATCH___$&___END_MATCH___"
     );
+}
+function highlightNormalMatch(
+    line,
+    lineIndex
+){
+
+    const query =
+        jsonSearchInput.value
+        .trim()
+        .toLowerCase();
+
+    if(!query){
+        return line;
+    }
+
+    const regex =
+        new RegExp(
+            query,
+            "gi"
+        );
+
+    const isCurrentLine =
+
+        normalSearchMatches[
+            normalMatchIndex
+        ] === lineIndex;
+
+    return line.replace(
+
+        regex,
+
+        isCurrentLine
+
+        ?
+
+        "___CURRENT_MATCH___$&___END_MATCH___"
+
+        :
+
+        "___MATCH___$&___END_MATCH___"
+    );
+}
+function renderNormalRows(){
+
+    let html = "";
+
+    normalLines.forEach(
+
+        (line,index)=>{
+
+            const rawLine =
+
+                highlightNormalMatch(
+                    line,
+                    index
+                );
+
+            let lineHtml =
+
+                syntaxHighlightJson(
+                    rawLine
+                );
+
+            lineHtml =
+
+                lineHtml
+
+                .replaceAll(
+                    "___MATCH___",
+                    '<span class="json-search-hit">'
+                )
+
+                .replaceAll(
+                    "___CURRENT_MATCH___",
+                    '<span class="current-json-match">'
+                )
+
+                .replaceAll(
+                    "___END_MATCH___",
+                    '</span>'
+                );
+
+html += `
+<div
+    class="json-line"
+    style="
+        display:flex;
+        align-items:center;
+        height:${LINE_HEIGHT}px;
+    "
+>
+    <span class="json-line-number">${index + 1}</span>
+
+    <span class="json-line-content">${lineHtml}</span>
+
+</div>`;
+        }
+    );
+
+    modalResponseContainer.innerHTML =
+        html;
 }
 function renderVirtualRows(){
     
@@ -743,6 +1064,18 @@ function openVirtualViewer(
     renderVirtualRows();
 }
 function openResponseModal(){
+    jsonSearchInput.value = "";
+
+jsonSearchCount.textContent =
+    "0 / 0";
+
+searchMatches = [];
+
+currentMatchIndex = -1;
+
+normalSearchMatches = [];
+
+normalMatchIndex = -1;
 
     try{
 
@@ -757,6 +1090,8 @@ function openResponseModal(){
         null,
         4
     );
+    normalLines =
+    jsonText.split("\n");
 
 const lineCount =
     jsonText.split("\n").length;
@@ -780,15 +1115,7 @@ if(lineCount > 5000){
 
 }else{
 
-    const highlighted =
-        syntaxHighlightJson(
-            json
-        );
-
-    modalResponseContainer.innerHTML =
-        addLineNumbers(
-            highlighted
-        );
+renderNormalRows();
 } 
 
     }catch{
@@ -1285,7 +1612,7 @@ setInterval(
                 src="https://lottie.host/be0da304-6228-4b58-8f73-6dc8c4ab033d/IIEzFtL95O.json"
                 background="transparent"
                 speed="1"
-                style="width:300px;height:300px;margin-top:-160px;"
+                style="width:272px;height:272px;margin-top:-175px;"
                 loop
                 autoplay
             ></lottie-player>

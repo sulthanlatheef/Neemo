@@ -645,7 +645,7 @@
             src="https://lottie.host/7366b9f9-d6e4-42ef-8282-8e49255938cc/c6IwXDOqYl.json"
             background="transparent"
             speed="1"
-            style="width: 480px; height: 480px; margin-top:-50px;"
+            style="width: 425px; height: 425px; margin-top:-70px;"
             loop
             autoplay
         ></lottie-player>
