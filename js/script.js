@@ -19,6 +19,7 @@ const modalLogContainer =
         "modalLogContainer"
     );
 
+
     const loadBtn =
         document.getElementById("loadFramesBtn");
 
@@ -1603,25 +1604,69 @@ setInterval(
     */
 
     function setLoading(text){
+        startResponseTimer();
 
     responseBox.innerHTML = `
 
         <div class="loading">
 
             <lottie-player
-                src="https://lottie.host/be0da304-6228-4b58-8f73-6dc8c4ab033d/IIEzFtL95O.json"
+                src="https://lottie.host/911371b4-7b18-4ff8-9234-351a695e7f35/AAdXLwMbtC.json"
                 background="transparent"
                 speed="1"
-                style="width:272px;height:272px;margin-top:-175px;"
+                style="width:252px;height:252px;margin-top:-170px;"
                 loop
                 autoplay
             ></lottie-player>
 
-            <div" style="font-size:18px;">${text}</div>
+            <div" style="font-size:18px; margin-top:10px;">${text}</div>
 
         </div>
 
     `;
+}
+let responseTimerInterval;
+let responseStartTime;
+
+function startResponseTimer(){
+
+    const timer =
+        document.getElementById("responseTimer");
+
+    timer.style.display = "flex";
+
+    responseStartTime = Date.now();
+
+    clearInterval(responseTimerInterval);
+
+    responseTimerInterval = setInterval(()=>{
+
+        const elapsed =
+            Math.floor(
+                (Date.now() - responseStartTime)/1000
+            );
+
+        const minutes =
+            String(Math.floor(elapsed/60))
+            .padStart(2,"0");
+
+        const seconds =
+            String(elapsed%60)
+            .padStart(2,"0");
+
+        timer.querySelector("span").textContent =
+            `${minutes}:${seconds}`;
+
+    },1000);
+}
+
+function stopResponseTimer(){
+
+    clearInterval(responseTimerInterval);
+
+    // Hide after 2 seconds
+   
+
 }
 
     /*
@@ -1660,10 +1705,11 @@ async function checkServerStatus(){
     try{
 
         const res = await fetch(
-            "http://127.0.0.1:5000/health"
-        );
+    "api.php?action=health"
+);
 
         const data = await res.json();
+       
 
         if (data.status === "healthy"){
 
@@ -1728,6 +1774,39 @@ setInterval(
     checkServerStatus,
     5000
 );
+async function updateStartServerButton() {
+
+    try {
+
+        const res = await fetch("api.php?action=health");
+        const data = await res.json();
+
+        if (data.status === "healthy") {
+
+            startServerBtn.disabled = true;
+            startServerBtn.innerHTML = `
+                <i class="fa-solid fa-circle-check"></i>
+                Running
+            `;
+
+        } 
+    } catch (error) {
+
+        // Server is down
+        startServerBtn.disabled = false;
+        startServerBtn.innerHTML = `
+            <i class="fa-solid fa-play"></i>
+            Start
+        `;
+    }
+}
+
+// Check immediately
+updateStartServerButton();
+
+
+// Check every 500 ms
+setInterval(updateStartServerButton, 2000);
 
     loadBtn.addEventListener("click", async ()=>{
 
@@ -1762,6 +1841,7 @@ setInterval(
             );
 
             const data = await res.json();
+            stopResponseTimer();
 
             responseBox.textContent =
                 JSON.stringify(data,null,2);
@@ -1827,6 +1907,7 @@ setInterval(
             });
 
         }catch(error){
+            stopResponseTimer();
 
             responseBox.textContent =
                 "Error loading frames";
@@ -1885,11 +1966,13 @@ setInterval(
             );
 
             const data = await res.json();
+            stopResponseTimer();
 
             responseBox.textContent =
                 JSON.stringify(data,null,2);
 
         }catch(error){
+            stopResponseTimer();
 
             responseBox.textContent =
                 "Error generating JSON";
@@ -1958,27 +2041,50 @@ async function isFlaskRunning(){
     }
 }
 
-async function startServer(){
+async function startServer() {
 
-    try{
-    
+  try {
 
-        await fetch(
-            "http://127.0.0.1:3001/start"
-        );
+    // Show loading spinner
+    startServerBtn.disabled = true;
+    startServerBtn.innerHTML = `
+        <i class="fa-solid fa-spinner fa-spin"></i>
+    `;
 
-        lastLogCount = 0;
+    const response = await fetch("http://127.0.0.1:3001/start");
 
-        logContainer.innerHTML = `
-            <div class="waiting-log">
-                Starting server...
-            </div>
-        `;
-
-    }catch(error){
-
-        console.error(error);
+    if (!response.ok) {
+        throw new Error("Failed to start server");
     }
+
+    lastLogCount = 0;
+
+    logContainer.innerHTML = `
+        <div class="waiting-log">
+            Starting server...
+        </div>
+    `;
+
+    // Keep spinner visible for 3 seconds
+   // setTimeout(() => {
+       // startServerBtn.disabled = false;
+       // startServerBtn.innerHTML = `
+         //   <i class="fa-solid fa-play"></i>
+          //  Start
+      //  `;
+    //}, 3000);
+
+} catch (error) {
+
+    console.error(error);
+
+    // Restore button immediately if an error occurs
+    startServerBtn.disabled = false;
+    startServerBtn.innerHTML = `
+        <i class="fa-solid fa-play"></i>
+        Start
+    `;
+}
 }
 
 async function stopServer(){
@@ -1988,6 +2094,12 @@ async function stopServer(){
         await fetch(
             "http://127.0.0.1:3001/stop"
         );
+
+         startServerBtn.disabled = false;
+            startServerBtn.innerHTML = `
+                <i class="fa-solid fa-play"></i>
+                Start
+            `;
 
     }catch(error){
 

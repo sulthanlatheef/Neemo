@@ -6,17 +6,6 @@ ini_set('display_errors', 1);
 header("Content-Type: application/json");
 require_once __DIR__ . '/vendor/autoload.php';
 
-use WebSocket\Client;
-
-const MINT_URL =
-    "https://formsaiplugin.unysite.com/figmaimport/auth/token";
-
-const MINT_SECRET =
-    "Xm3K8_nUjqn1Z09HG0oFxQ1VTyAazITJh81t7ixlHDA";
-
-const WS_URL =
-    "ws://localhost:5000/figmaimport/convert/ws";
-
 $action = $_GET['action'] ?? '';
 
 $fastapiBaseUrl = "http://127.0.0.1:5000/figmaimport";
@@ -51,72 +40,6 @@ function sendGetRequest($url)
     }
 
     return $response;
-}
-function getFreshToken()
-{
-    $ch = curl_init();
-
-    curl_setopt_array($ch, [
-
-        CURLOPT_URL => MINT_URL,
-
-        CURLOPT_POST => true,
-
-        CURLOPT_RETURNTRANSFER => true,
-
-        CURLOPT_HTTPHEADER => [
-            "X-Mint-Secret: " . MINT_SECRET,
-            "Content-Type: application/json"
-        ],
-
-        CURLOPT_SSL_VERIFYPEER => false,
-        CURLOPT_SSL_VERIFYHOST => false
-
-    ]);
-
-    $response = curl_exec($ch);
-
-    if (curl_errno($ch)) {
-        throw new Exception(
-            curl_error($ch)
-        );
-    }
-
-    curl_close($ch);
-
-    $data = json_decode(
-        $response,
-        true
-    );
-
-    $token =
-        $data["access_token"]
-        ?? $data["token"]
-        ?? $data["jwt"]
-        ?? null;
-
-    if (!$token) {
-        throw new Exception(
-            "Token not found"
-        );
-    }
-
-    return $token;
-}
-
-function createWebSocketClient()
-{
-    $token = getFreshToken();
-
-    return new Client(
-        WS_URL,
-        [
-            "timeout" => 300,
-            "headers" => [
-                "Authorization" => "Bearer {$token}"
-            ]
-        ]
-    );
 }
 
 /*
@@ -233,6 +156,51 @@ if ($action === 'start_nemo') {
 
     exit;
 }
+function postJsonRequest($url, $payload)
+{
+    $ch = curl_init();
+
+    curl_setopt_array($ch, [
+        CURLOPT_URL => $url,
+        CURLOPT_POST => true,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_HTTPHEADER => [
+            "Content-Type: application/json"
+        ],
+        CURLOPT_POSTFIELDS => json_encode($payload),
+        CURLOPT_TIMEOUT => 0
+    ]);
+
+    $response = curl_exec($ch);
+
+    if (curl_errno($ch)) {
+        throw new Exception(curl_error($ch));
+    }
+
+    $status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+    curl_close($ch);
+
+    if ($status >= 400) {
+        throw new Exception($response);
+    }
+
+    return $response;
+}
+/*
+|--------------------------------------------------------------------------
+| HEALTH CHECK
+|--------------------------------------------------------------------------
+*/
+
+if ($action === 'health') {
+
+    echo sendGetRequest(
+        "http://127.0.0.1:5000/health"
+    );
+
+    exit;
+}
 /*
 |--------------------------------------------------------------------------
 | LOAD FRAMES
@@ -241,81 +209,16 @@ if ($action === 'start_nemo') {
 
 if ($action === 'load_frames') {
 
-    try {
+   $input = json_decode(file_get_contents("php://input"), true);
 
-        $input = json_decode(
-            file_get_contents("php://input"),
-            true
-        );
+echo postJsonRequest(
+    "http://127.0.0.1:3001/load_frames",
+    [
+        "figma_url" => $input["figma_url"]
+    ]
+);
 
-        $figmaUrl =
-            $input['figma_url'] ?? '';
-
-        $client =
-            createWebSocketClient();
-
-        $client->send(
-            json_encode([
-                "type" => "submit_url",
-                "request_id" => uniqid(),
-                "figma_url" => $figmaUrl
-            ])
-        );
-
-        while (true) {
-
-            $message = json_decode(
-                $client->receive(),
-                true
-            );
-
-            $type =
-                $message["type"] ?? "";
-
-            if ($type === "ping") {
-
-                $client->send(
-                    json_encode([
-                        "type" => "pong"
-                    ])
-                );
-
-                continue;
-            }
-
-            if ($type === "error") {
-
-                echo json_encode([
-                    "status" => "error",
-                    "message" =>
-                        $message["message"]
-                        ?? "Unknown error"
-                ]);
-
-                exit;
-            }
-
-            if ($type === "submit_url_response") {
-
-                echo json_encode(
-                    $message["result"]
-                );
-
-                exit;
-            }
-        }
-
-    } catch (Throwable $e) {
-
-        http_response_code(500);
-
-        echo json_encode([
-            "status" => "error",
-            "message" => $e->getMessage()
-        ]);
-    }
-
-    exit;
+exit;
 }
 /*
 |--------------------------------------------------------------------------
@@ -325,89 +228,17 @@ if ($action === 'load_frames') {
 
 if ($action === 'generate_json') {
 
-    set_time_limit(0);
-    ini_set('max_execution_time', 0);
+   $input = json_decode(file_get_contents("php://input"), true);
 
-    try {
+echo postJsonRequest(
+    "http://127.0.0.1:3001/generate_json",
+    [
+        "file_key" => $input["file_key"],
+        "frame_name" => $input["frame_name"]
+    ]
+);
 
-        $input = json_decode(
-            file_get_contents("php://input"),
-            true
-        );
-
-        $fileKey =
-            $input['file_key'] ?? '';
-
-        $frameName =
-            $input['frame_name'] ?? '';
-
-        $client =
-            createWebSocketClient();
-
-        $client->send(
-            json_encode([
-                "type" => "convert",
-                "request_id" => uniqid(),
-                "file_key" => $fileKey,
-                "frame_name" => $frameName
-            ])
-        );
-
-        while (true) {
-
-            $message = json_decode(
-                $client->receive(),
-                true
-            );
-
-            $type =
-                $message["type"] ?? "";
-
-            if ($type === "ping") {
-
-                $client->send(
-                    json_encode([
-                        "type" => "pong"
-                    ])
-                );
-
-                continue;
-            }
-
-            if ($type === "error") {
-
-                echo json_encode([
-                    "status" => "error",
-                    "message" =>
-                        $message["message"]
-                        ?? "Unknown error"
-                ]);
-
-                exit;
-            }
-
-            if ($type === "convert_response") {
-
-                echo json_encode(
-                    $message["result"],
-                    JSON_UNESCAPED_UNICODE
-                );
-
-                exit;
-            }
-        }
-
-    } catch (Throwable $e) {
-
-        http_response_code(500);
-
-        echo json_encode([
-            "status" => "error",
-            "message" => $e->getMessage()
-        ]);
-    }
-
-    exit;
+exit;
 }
 /*
 |--------------------------------------------------------------------------

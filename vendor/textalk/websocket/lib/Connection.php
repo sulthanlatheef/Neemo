@@ -503,6 +503,9 @@ class Connection implements LoggerAwareInterface
         $meta = ['closed' => true];
         if ($this->isConnected()) {
             $meta = $this->getMeta();
+             error_log("========== STREAM META ==========");
+        error_log(print_r($meta, true));
+        error_log("Message: " . $message);
             $this->disconnect();
             if (!empty($meta['timed_out'])) {
                 $this->logger->error($message, $meta);

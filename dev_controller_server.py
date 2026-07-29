@@ -1,11 +1,16 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
-
+import asyncio
 import subprocess
 import threading
 import logging
 import psutil
 import time
+
+from websocket_client import (
+    submit_url,
+    convert
+)
 
 # ------------------------------------------------------------------
 # DISABLE FLASK REQUEST LOGS
@@ -314,6 +319,87 @@ def shutdown():
     return jsonify({
         "status": "shutdown"
     })
+    
+# ------------------------------------------------------------
+# Load Frames
+# ------------------------------------------------------------
+
+@app.post("/load_frames")
+def load_frames():
+
+    try:
+
+        data = request.get_json(force=True)
+
+        figma_url = data.get("figma_url")
+
+        if not figma_url:
+            return jsonify({
+                "status": "error",
+                "message": "figma_url is required"
+            }), 400
+
+        result = asyncio.run(
+            submit_url(figma_url)
+        )
+
+        return jsonify(result)
+
+    except Exception as e:
+
+        return jsonify({
+            "status": "error",
+            "message": str(e)
+        }), 500
+
+
+# ------------------------------------------------------------
+# Generate JSON
+# ------------------------------------------------------------
+
+@app.post("/generate_json")
+def generate_json():
+
+    try:
+
+        data = request.get_json(force=True)
+
+        file_key = data.get("file_key")
+        frame_name = data.get("frame_name")
+
+        if not file_key or not frame_name:
+
+            return jsonify({
+
+                "status": "error",
+
+                "message":
+                    "file_key and frame_name are required"
+
+            }), 400
+
+        result = asyncio.run(
+
+            convert(
+                file_key,
+                frame_name
+            )
+
+        )
+
+        return jsonify(result)
+
+    except Exception as e:
+
+        return jsonify({
+
+            "status": "error",
+
+            "message": str(e)
+
+        }), 500
+
+
 
 # ------------------------------------------------------------------
 # MAIN

@@ -4949,3 +4949,49 @@ false
     line-height:24px;
 }
 
+.response-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+}
+
+.response-header-right{
+    display:flex;
+    align-items:center;
+    gap:14px;
+}
+
+.response-timer{
+
+    display:Flex;
+    margin-right:340px;
+
+    align-items:center;
+    gap:8px;
+
+    padding:7px 14px;
+
+    border-radius:999px;
+
+    background:rgba(0,170,255,.12);
+
+    border:1px solid rgba(0,170,255,.25);
+
+    color:#6fdcff;
+
+    font-size:15.3px;
+
+    font-weight:600;
+
+    letter-spacing:.5px;
+
+    backdrop-filter:blur(12px);
+}
+
+.response-timer i{
+    color:#38bdf8;
+}
+.dev-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}

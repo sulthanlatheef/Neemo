@@ -619,20 +619,26 @@
 </div>
 
         <div class="response glass">
-             <div class="response-header">
+           <div class="response-header">
 
-        <p class="performance-title" style="">
-            Response Console
-        </p>
+    <p class="performance-title">
+        Response Console
+    </p>
+
+    <div class="response-header-right">
+
+        <div id="responseTimer" class="response-timer">
+            <i class="fa-regular fa-clock"></i>
+            <span>00:00</span>
+        </div>
 
         <button id="expandResponseBtn">
-
             <i class="fa-solid fa-expand"></i>
-
         </button>
 
     </div>
 
+</div>
             <div class="response-wrapper">
 
                 <pre id="responseBox">

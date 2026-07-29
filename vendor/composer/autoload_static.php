@@ -6,10 +6,53 @@ namespace Composer\Autoload;
 
 class ComposerStaticInitdf1f81a0630f57ab5fb14da5bc0832c6
 {
+    public static $files = array (
+        '88254829cb0eed057c30eaabb6d8edc4' => __DIR__ . '/..' . '/amphp/amp/src/functions.php',
+        '429ae5f14a13a9076791c19422e10996' => __DIR__ . '/..' . '/amphp/amp/src/Future/functions.php',
+        'c8601a4144b50a7b548da082c89c4dc1' => __DIR__ . '/..' . '/amphp/amp/src/Internal/functions.php',
+        '3da389f428d8ee50333e4391c3f45046' => __DIR__ . '/..' . '/amphp/serialization/src/functions.php',
+        'bcb7d4fc55f4b1a7e10f5806723e9892' => __DIR__ . '/..' . '/amphp/sync/src/functions.php',
+        '6c2681bc13923b80242cc286856cab22' => __DIR__ . '/..' . '/amphp/byte-stream/src/functions.php',
+        '4ee21bf8253a2272056aefb41f7f0116' => __DIR__ . '/..' . '/amphp/byte-stream/src/Internal/functions.php',
+        'ad155f8f1cf0d418fe49e248db8c661b' => __DIR__ . '/..' . '/react/promise/src/functions_include.php',
+        '107d0b55c0ad2d07d8643394552ac029' => __DIR__ . '/..' . '/amphp/process/src/functions.php',
+        '445532134d762b3cbc25500cac266092' => __DIR__ . '/..' . '/daverandom/libdns/src/functions.php',
+        'f4c761ca07639428acc28ba36643243e' => __DIR__ . '/..' . '/amphp/dns/src/functions.php',
+        'd4e415514e4352172d58f02433fa50e4' => __DIR__ . '/..' . '/amphp/socket/src/functions.php',
+        '1c2dcb9d6851a7abaae89f9586ddd460' => __DIR__ . '/..' . '/amphp/socket/src/Internal/functions.php',
+        '7fec264e4908bd2976476a6241c3f4d0' => __DIR__ . '/..' . '/amphp/socket/src/SocketAddress/functions.php',
+        'a4a119a56e50fbb293281d9a48007e0e' => __DIR__ . '/..' . '/symfony/polyfill-php80/bootstrap.php',
+        '3d8ee50db78074a9235f0c2008c26b42' => __DIR__ . '/..' . '/amphp/http/src/functions.php',
+        '40522f9f0eb7d4f191114e944ee6d064' => __DIR__ . '/..' . '/amphp/http/src/Internal/constants.php',
+        '7b11c4dc42b3b3023073cb14e519683c' => __DIR__ . '/..' . '/ralouphie/getallheaders/src/getallheaders.php',
+        '6e3fae29631ef280660b3cdad06f25a8' => __DIR__ . '/..' . '/symfony/deprecation-contracts/function.php',
+        'db2f6d3e039789c7acd0e5d1d5a42077' => __DIR__ . '/..' . '/amphp/http-client/src/functions.php',
+        '77e5a577434e31d19d8dd6aeceac1ff4' => __DIR__ . '/..' . '/amphp/http-client/src/Internal/functions.php',
+        '3d05d4f147c95ba663000bd908d45656' => __DIR__ . '/..' . '/amphp/websocket/src/functions.php',
+        '4be4fbd9f5a89207b1fd1c85ae339dd7' => __DIR__ . '/..' . '/amphp/websocket-client/src/functions.php',
+        '3be16222a6efa6dd226a219eaaff823b' => __DIR__ . '/..' . '/ratchet/pawl/src/functions_include.php',
+    );
+
     public static $prefixLengthsPsr4 = array (
         'W' =>
         array (
             'WebSocket\\' => 10,
+        ),
+        'S' =>
+        array (
+            'Symfony\\Polyfill\\Php80\\' => 23,
+        ),
+        'R' =>
+        array (
+            'Revolt\\' => 7,
+            'React\\Stream\\' => 13,
+            'React\\Socket\\' => 13,
+            'React\\Promise\\' => 14,
+            'React\\EventLoop\\' => 16,
+            'React\\Dns\\' => 10,
+            'React\\Cache\\' => 12,
+            'Ratchet\\RFC6455\\' => 16,
+            'Ratchet\\Client\\' => 15,
         ),
         'P' =>
         array (
@@ -18,12 +61,86 @@ class ComposerStaticInitdf1f81a0630f57ab5fb14da5bc0832c6
             'Phrity\\Util\\' => 12,
             'Phrity\\Net\\' => 11,
         ),
+        'L' =>
+        array (
+            'LibDNS\\' => 7,
+            'League\\Uri\\' => 11,
+        ),
+        'K' =>
+        array (
+            'Kelunik\\Certificate\\' => 20,
+        ),
+        'G' =>
+        array (
+            'GuzzleHttp\\Psr7\\' => 16,
+        ),
+        'E' =>
+        array (
+            'Evenement\\' => 10,
+        ),
+        'A' =>
+        array (
+            'Amp\\Websocket\\Client\\' => 21,
+            'Amp\\Websocket\\' => 14,
+            'Amp\\Sync\\' => 9,
+            'Amp\\Socket\\' => 11,
+            'Amp\\Serialization\\' => 18,
+            'Amp\\Process\\' => 12,
+            'Amp\\Pipeline\\' => 13,
+            'Amp\\Parser\\' => 11,
+            'Amp\\Http\\Client\\' => 16,
+            'Amp\\Http\\' => 9,
+            'Amp\\Dns\\' => 8,
+            'Amp\\Cache\\' => 10,
+            'Amp\\ByteStream\\' => 15,
+            'Amp\\' => 4,
+        ),
     );
 
     public static $prefixDirsPsr4 = array (
         'WebSocket\\' =>
         array (
             0 => __DIR__ . '/..' . '/textalk/websocket/lib',
+        ),
+        'Symfony\\Polyfill\\Php80\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/symfony/polyfill-php80',
+        ),
+        'Revolt\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/revolt/event-loop/src',
+        ),
+        'React\\Stream\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/react/stream/src',
+        ),
+        'React\\Socket\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/react/socket/src',
+        ),
+        'React\\Promise\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/react/promise/src',
+        ),
+        'React\\EventLoop\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/react/event-loop/src',
+        ),
+        'React\\Dns\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/react/dns/src',
+        ),
+        'React\\Cache\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/react/cache/src',
+        ),
+        'Ratchet\\RFC6455\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/ratchet/rfc6455/src',
+        ),
+        'Ratchet\\Client\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/ratchet/pawl/src',
         ),
         'Psr\\Log\\' =>
         array (
@@ -42,10 +159,94 @@ class ComposerStaticInitdf1f81a0630f57ab5fb14da5bc0832c6
         array (
             0 => __DIR__ . '/..' . '/phrity/net-uri/src',
         ),
+        'LibDNS\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/daverandom/libdns/src',
+        ),
+        'League\\Uri\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/league/uri-components',
+            1 => __DIR__ . '/..' . '/league/uri',
+            2 => __DIR__ . '/..' . '/league/uri-interfaces',
+        ),
+        'Kelunik\\Certificate\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/kelunik/certificate/src',
+        ),
+        'GuzzleHttp\\Psr7\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/guzzlehttp/psr7/src',
+        ),
+        'Evenement\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/evenement/evenement/src',
+        ),
+        'Amp\\Websocket\\Client\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/amphp/websocket-client/src',
+        ),
+        'Amp\\Websocket\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/amphp/websocket/src',
+        ),
+        'Amp\\Sync\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/amphp/sync/src',
+        ),
+        'Amp\\Socket\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/amphp/socket/src',
+        ),
+        'Amp\\Serialization\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/amphp/serialization/src',
+        ),
+        'Amp\\Process\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/amphp/process/src',
+        ),
+        'Amp\\Pipeline\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/amphp/pipeline/src',
+        ),
+        'Amp\\Parser\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/amphp/parser/src',
+        ),
+        'Amp\\Http\\Client\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/amphp/http-client/src',
+        ),
+        'Amp\\Http\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/amphp/http/src',
+            1 => __DIR__ . '/..' . '/amphp/hpack/src',
+        ),
+        'Amp\\Dns\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/amphp/dns/src',
+        ),
+        'Amp\\Cache\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/amphp/cache/src',
+        ),
+        'Amp\\ByteStream\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/amphp/byte-stream/src',
+        ),
+        'Amp\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/amphp/amp/src',
+        ),
     );
 
     public static $classMap = array (
+        'Attribute' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
+        'PhpToken' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/PhpToken.php',
+        'Stringable' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Stringable.php',
+        'UnhandledMatchError' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/UnhandledMatchError.php',
+        'ValueError' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/ValueError.php',
     );
 
     public static function getInitializer(ClassLoader $loader)
