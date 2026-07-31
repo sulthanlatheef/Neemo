@@ -2,18 +2,18 @@ import json
 import uuid
 import requests
 import websockets
-
+from config import PRODUCTION_WS_URL,LOCAL_WS_URL,MINT_SECRET,MINT_URL
 # ------------------------------------------------------------------
 # Configuration
 # ------------------------------------------------------------------
 
-WS_URL_DEV = "wss://formsaiplugin.unysite.com/figmaimport/convert/ws"
+WS_URL_DEV = PRODUCTION_WS_URL
 
-WS_URL_LOCAL = "ws://localhost:5000/figmaimport/convert/ws"
+WS_URL_LOCAL = LOCAL_WS_URL
 
-MINT_URL = "https://formsaiplugin.unysite.com/figmaimport/auth/token"
+MINT_URL = MINT_URL
 
-MINT_SECRET = "Xm3K8_nUjqn1Z09HG0oFxQ1VTyAazITJh81t7ixlHDA"
+MINT_SECRET = MINT_SECRET
 
 
 # ------------------------------------------------------------------

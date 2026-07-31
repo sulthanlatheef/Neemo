@@ -6,6 +6,7 @@ import threading
 import logging
 import psutil
 import time
+from config import DOCKER_PROJECT_PATH
 
 from websocket_client import (
     submit_url,
@@ -16,9 +17,9 @@ from websocket_client import (
 # DISABLE FLASK REQUEST LOGS
 # ------------------------------------------------------------------
 
-log = logging.getLogger('werkzeug')
+#log = logging.getLogger('werkzeug')
 
-log.disabled = True
+#log.disabled = True
 
 # ------------------------------------------------------------------
 # APP
@@ -35,7 +36,7 @@ environment = "local"
 # CONFIG
 # ------------------------------------------------------------------
 
-PROJECT_PATH = r"C:\Users\sulthan.latheef\figma_import_2\figma-import"
+PROJECT_PATH = DOCKER_PROJECT_PATH
 
 # ------------------------------------------------------------------
 # GLOBAL STATE
