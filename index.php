@@ -107,29 +107,35 @@
         </div>
 
         <!-- URL PANEL -->
+<div class="panel glass">
 
-        <div class="panel glass">
+    <div class="panel-title figma-header">
+        <p class="performance-title">Figma URL</p>
 
-            <div class="panel-title">
-              <P class="performance-title">  Figma URL<P>
-            </div>
+        <div class="env-switch">
+            <span class="env-label active" id="localLabel">LOCAL</span>
 
-            <input
-                type="text"
-                id="figmaUrl"
-                placeholder="Paste Figma URL..."
-            >
+            <label class="switch">
+                <input type="checkbox" id="environmentToggle">
+                <span class="slider"></span>
+            </label>
 
-           <button id="loadFramesBtn" style="font-size:15px;">
-
-    <i class="fa-solid fa-bowl-food btn-icon"></i>
-
-    Feed URL
-
-</button>
-
-
+            <span class="env-label" id="devLabel">DEV</span>
         </div>
+    </div>
+
+    <input
+        type="text"
+        id="figmaUrl"
+        placeholder="Paste Figma URL..."
+    >
+
+    <button id="loadFramesBtn" style="font-size:15px;">
+        <i class="fa-solid fa-bowl-food btn-icon"></i>
+        Feed URL
+    </button>
+
+</div>
 
         <!-- FRAME PANEL -->
          
@@ -240,44 +246,73 @@
 
     </div>
 
-    <!-- LIVE LOGS -->
+<!-- LIVE LOGS -->
 
-    <div class="logs-panel glass">
+<div class="logs-panel glass" id="logsPanel">
 
-       <div
-    style="
-        display:flex;
-        justify-content:space-between;
-        align-items:center;
-        margin-bottom:18px;
-    "
->
-    <p class="performance-title">
-        Live Server Logs
-    </p>
-
-    <button
-        id="expandLogsBtn"
+    <div
         style="
-            width:auto;
-            padding:10px 14px;
-            border-radius:12px;
-            font-size:13px;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            margin-bottom:18px;
         "
     >
-        <i class="fa-solid fa-expand"></i>
-    </button>
-</div>
+        <p class="performance-title">
+            Live Server Logs
+        </p>
 
-        <div id="logContainer">
+        <button
+            id="expandLogsBtn"
+            style="
+                width:auto;
+                padding:10px 14px;
+                border-radius:12px;
+                font-size:13px;
+            "
+        >
+            <i class="fa-solid fa-expand"></i>
+        </button>
+    </div>
 
-            <div class="waiting-log">
-                Waiting for logs...
-            </div>
+    <div id="logContainer">
 
+        <div class="waiting-log">
+            Waiting for logs...
         </div>
 
     </div>
+
+    <!-- DEV MODE OVERLAY -->
+   <div class="dev-overlay">
+
+    <lottie-player
+        src="https://lottie.host/3756aa18-0154-49c1-996d-f18a2066fc18/VbhDN14UJ9.json"
+        background="transparent"
+        speed="1"
+        style="width:240px;height:240px; margin-bottom:-25px;"
+        loop
+        autoplay>
+    </lottie-player>
+
+    <div class="dev-message">
+
+    <div class="dev-badge">
+        DEV ENVIRONMENT
+    </div>
+
+    
+
+    <div class="subtitle">
+        Live log streaming is available only in Local mode.
+    </div>
+
+</div>
+
+</div>
+
+</div>
+    
 
 </div>
     

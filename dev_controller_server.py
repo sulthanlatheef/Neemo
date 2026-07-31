@@ -28,6 +28,9 @@ app = Flask(__name__)
 
 CORS(app)
 
+# Global environment
+environment = "local"
+
 # ------------------------------------------------------------------
 # CONFIG
 # ------------------------------------------------------------------
@@ -51,6 +54,34 @@ last_net = psutil.net_io_counters()
 
 last_time = time.time()
 
+@app.route("/set-environment", methods=["POST"])
+def set_environment():
+    global environment
+
+    data = request.get_json()
+
+    env = data.get("environment")
+
+    if env not in ["local", "dev"]:
+        return jsonify({
+            "success": False,
+            "message": "Invalid environment."
+        }), 400
+
+    environment = env
+
+    print(f"Environment changed to: {environment}")
+
+    return jsonify({
+        "success": True,
+        "environment": environment
+    })
+
+@app.route("/get-environment", methods=["GET"])
+def get_environment():
+    return jsonify({
+        "environment": environment
+    })
 # ------------------------------------------------------------------
 # LOG READER
 # ------------------------------------------------------------------
@@ -340,7 +371,7 @@ def load_frames():
             }), 400
 
         result = asyncio.run(
-            submit_url(figma_url)
+            submit_url(figma_url,environment)
         )
 
         return jsonify(result)
@@ -382,7 +413,8 @@ def generate_json():
 
             convert(
                 file_key,
-                frame_name
+                frame_name,
+                environment
             )
 
         )

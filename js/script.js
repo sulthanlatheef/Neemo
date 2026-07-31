@@ -129,6 +129,91 @@ const prevJsonMatch =
     document.getElementById(
         "prevJsonMatch"
     );
+
+
+const envToggle = document.getElementById("environmentToggle");
+const localLabel = document.getElementById("localLabel");
+const devLabel = document.getElementById("devLabel");
+const logsPanel = document.getElementById("logsPanel");
+
+let environment = "local";
+
+envToggle.addEventListener("change", async function () {
+
+    if (this.checked) {
+        environment = "dev";
+        localLabel.classList.remove("active");
+        devLabel.classList.add("active");
+
+        logsPanel.classList.add("dev-mode");
+
+    } else {
+        environment = "local";
+        localLabel.classList.add("active");
+        devLabel.classList.remove("active");
+
+        logsPanel.classList.remove("dev-mode");
+    }
+
+    try {
+
+        const response = await fetch("http://127.0.0.1:3001/set-environment", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                environment: environment
+            })
+        });
+
+        const result = await response.json();
+
+        console.log("Environment updated:", result.environment);
+
+    } catch (err) {
+        console.error("Failed to update environment:", err);
+    }
+
+});
+
+async function loadEnvironment() {
+
+    try {
+
+        const response = await fetch("http://127.0.0.1:3001/get-environment");
+        const data = await response.json();
+
+        environment = data.environment;
+
+        if (environment === "dev") {
+
+            envToggle.checked = true;
+            localLabel.classList.remove("active");
+            devLabel.classList.add("active");
+
+            logsPanel.classList.add("dev-mode");
+
+        } else {
+
+            envToggle.checked = false;
+            localLabel.classList.add("active");
+            devLabel.classList.remove("active");
+
+            logsPanel.classList.remove("dev-mode");
+        }
+
+    } catch (err) {
+
+        console.error("Failed to load environment:", err);
+
+    }
+
+}
+
+window.addEventListener("DOMContentLoaded", loadEnvironment);
+
+window.addEventListener("DOMContentLoaded", loadEnvironment);
 function searchJson(){
 
     const query =
@@ -1806,7 +1891,7 @@ updateStartServerButton();
 
 
 // Check every 500 ms
-setInterval(updateStartServerButton, 2000);
+setInterval(updateStartServerButton, 5000);
 
     loadBtn.addEventListener("click", async ()=>{
 
@@ -2090,10 +2175,31 @@ async function startServer() {
 async function stopServer(){
 
     try{
+         stopServerBtn.disabled = true;
+    stopServerBtn.innerHTML = `
+        <i class="fa-solid fa-spinner fa-spin"></i>
+    `;
+
 
         await fetch(
             "http://127.0.0.1:3001/stop"
         );
+
+         
+        stopServerBtn.disabled = false;
+        stopServerBtn.innerHTML = `
+           
+            stopped !
+        `;
+    
+
+     setTimeout(() => {
+       
+        stopServerBtn.innerHTML = `
+            <i class="fa-solid fa-stop"></i>
+            stop
+        `;
+    }, 2000);
 
          startServerBtn.disabled = false;
             startServerBtn.innerHTML = `
@@ -2110,8 +2216,10 @@ async function stopServer(){
 async function restartServer(){
 
     try{
-
-      
+        restartServerBtn.disabled = true;
+    restartServerBtn.innerHTML = `
+        <i class="fa-solid fa-spinner fa-spin"></i>
+    `; 
 
         logContainer.innerHTML = `
             <div class="waiting-log">
@@ -2122,8 +2230,25 @@ async function restartServer(){
         await fetch(
             "http://127.0.0.1:3001/restart"
         );
-        lastLogCount = 0;
 
+        lastLogCount = 0;
+        
+        restartServerBtn.disabled = false;
+        restartServerBtn.innerHTML = `
+           
+            Initiated !
+        `;
+    
+
+     setTimeout(() => {
+       
+        restartServerBtn.innerHTML = `
+            <i class="fa-solid fa-rotate-right"></i>
+            Restart
+        `;
+    }, 2000);
+
+         
     }catch(error){
 
         console.error(error);

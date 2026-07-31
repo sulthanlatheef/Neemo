@@ -4995,3 +4995,381 @@ false
     opacity: 0.7;
     cursor: not-allowed;
 }
+.figma-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.performance-title {
+    margin: 0;
+}
+
+.env-switch {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.env-label {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.7px;
+    color: rgba(255, 255, 255, 0.45);
+    transition: all 0.3s ease;
+    user-select: none;
+}
+
+.env-label.active {
+    color: #ffffff;
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.45);
+}
+
+.switch {
+    position: relative;
+    width: 52px;
+    height: 24px;
+}
+
+.switch input {
+    display: none;
+}
+
+.slider {
+    position: absolute;
+    inset: 0;
+    cursor: pointer;
+    border-radius: 999px;
+    background: linear-gradient(145deg, #32343b, #22242b);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow:
+        inset 0 1px 4px rgba(255, 255, 255, 0.05),
+        inset 0 -2px 4px rgba(0, 0, 0, 0.35),
+        0 4px 10px rgba(0, 0, 0, 0.35);
+    transition: all 0.35s ease;
+}
+
+.slider::before {
+    content: "";
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    left: 3px;
+    top: 2px;
+    border-radius: 50%;
+    background: linear-gradient(180deg, #ffffff, #d8d8d8);
+    box-shadow:
+        0 2px 6px rgba(0, 0, 0, 0.35),
+        inset 0 1px 2px rgba(255, 255, 255, 0.8);
+    transition: all 0.35s cubic-bezier(.4, 0, .2, 1);
+}
+
+/* Hover Effect */
+.switch:hover .slider {
+    box-shadow:
+        inset 0 1px 4px rgba(255, 255, 255, 0.05),
+        0 0 14px rgba(255, 255, 255, 0.08),
+        0 4px 12px rgba(0, 0, 0, 0.45);
+}
+
+/* DEV Selected */
+.switch input:checked + .slider {
+    background: linear-gradient(135deg, #4f8cff, #2b6dff);
+    box-shadow:
+        inset 0 1px 4px rgba(255, 255, 255, 0.18),
+        0 0 14px rgba(59, 130, 246, 0.45),
+        0 4px 12px rgba(59, 130, 246, 0.25);
+}
+
+.switch input:checked + .slider::before {
+    transform: translateX(28px);
+}
+
+/* Press Animation */
+.switch:active .slider::before {
+    width: 22px;
+}
+
+/* Keyboard Focus */
+.switch input:focus + .slider {
+    outline: 2px solid rgba(59, 130, 246, 0.45);
+    outline-offset: 3px;
+}
+.switch {
+    position: relative;
+    width: 54px;
+    height: 26px;
+}
+
+.slider::before {
+    content: "";
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    left: 3px;
+    top: 2px;
+    border-radius: 50%;
+    background: linear-gradient(180deg, #ffffff, #d8d8d8);
+    box-shadow:
+        0 2px 6px rgba(0, 0, 0, 0.35),
+        inset 0 1px 2px rgba(255, 255, 255, 0.8);
+    transition: all 0.35s cubic-bezier(.4, 0, .2, 1);
+}
+
+.switch input:checked + .slider::before {
+    transform: translateX(28px);
+}
+
+.switch:active .slider::before {
+    width: 24px;
+}
+/* DEV Selected - Neon Orange */
+
+.switch input:checked + .slider {
+    background: linear-gradient(135deg, #ffb347, #ff7a00);
+    box-shadow:
+        inset 0 1px 4px rgba(255,255,255,.18),
+        0 0 8px rgba(255,122,0,.35),
+        0 0 18px rgba(255,140,0,.45),
+        0 4px 12px rgba(255,122,0,.28);
+}
+
+/* Orange Glow on Thumb */
+
+.switch input:checked + .slider::before {
+    transform: translateX(28px);
+    box-shadow:
+        0 2px 8px rgba(0,0,0,.35),
+        inset 0 1px 2px rgba(255,255,255,.85),
+        0 0 10px rgba(255,170,0,.55);
+}
+
+/* Focus */
+
+.switch input:focus + .slider {
+    outline: 2px solid rgba(255,140,0,.45);
+    outline-offset: 3px;
+}
+/* DEV Selected - Electric Neon Blue */
+
+.switch input:checked + .slider {
+    background: linear-gradient(135deg, #45caff, #0078ff);
+    box-shadow:
+        inset 0 1px 4px rgba(255,255,255,.18),
+        0 0 8px rgba(0,153,255,.35),
+        0 0 18px rgba(0,183,255,.55),
+        0 0 30px rgba(0,183,255,.25),
+        0 4px 12px rgba(0,122,255,.35);
+}
+
+/* Thumb */
+
+.switch input:checked + .slider::before {
+    transform: translateX(28px);
+    background: linear-gradient(180deg, #ffffff, #f1f9ff);
+    box-shadow:
+        0 2px 8px rgba(0,0,0,.35),
+        inset 0 1px 2px rgba(255,255,255,.9),
+        0 0 12px rgba(0,183,255,.7);
+}
+
+/* Focus */
+
+.switch input:focus + .slider {
+    outline: 2px solid rgba(0,183,255,.45);
+    outline-offset: 3px;
+}
+/* =====================================================
+   LOG PANEL - DEVELOPMENT MODE
+===================================================== */
+
+.logs-panel{
+
+    position:relative;
+
+    overflow:hidden;
+
+    isolation:isolate;
+
+}
+
+/* Blur only the content */
+
+.logs-panel.dev-mode #logContainer{
+
+    filter:blur(8px);
+
+    opacity:.18;
+
+    transform:scale(.98);
+
+    transition:.35s ease;
+
+    pointer-events:none;
+
+    user-select:none;
+
+}
+
+/* Fade header */
+
+.logs-panel.dev-mode .performance-title,
+.logs-panel.dev-mode #expandLogsBtn{
+
+    filter:blur(2px);
+
+    opacity:.22;
+
+    transition:.35s ease;
+
+}
+
+/* Dark glass overlay */
+
+.logs-panel::before{
+
+    content:"";
+
+    position:absolute;
+
+    inset:0;
+
+    background:rgba(2,6,23,.22);
+
+    backdrop-filter:blur(2px);
+
+    opacity:0;
+
+    transition:.35s ease;
+
+    z-index:5;
+
+    pointer-events:none;
+
+}
+
+.logs-panel.dev-mode::before{
+
+    opacity:1;
+
+}
+
+/* =====================================================
+   DEV OVERLAY
+===================================================== */
+
+.dev-overlay{
+
+    position:absolute;
+
+    inset:0;
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+    align-items:center;
+
+    gap:8px;
+
+    opacity:0;
+
+    visibility:hidden;
+
+    transition:.35s ease;
+
+    pointer-events:none;
+
+    z-index:999;
+
+}
+
+/* Show */
+
+.logs-panel.dev-mode .dev-overlay{
+
+    opacity:1;
+
+    visibility:visible;
+
+}
+
+/* =====================================================
+   LOTTIE
+===================================================== */
+
+.dev-overlay lottie-player{
+
+    width:150px;
+
+    height:150px;
+
+    margin-bottom:-8px;
+
+    filter:drop-shadow(0 0 18px rgba(56,189,248,.35));
+
+}
+
+/* =====================================================
+   TEXT
+===================================================== */
+
+.dev-message{
+
+    text-align:center;
+
+}
+
+.dev-message .title{
+
+    font-size:19px;
+
+    font-weight:600;
+
+    color:#ffffff;
+
+    letter-spacing:.8px;
+
+}
+
+.dev-message .subtitle{
+
+    margin-top:10px;
+
+    font-size:14.5px;
+
+    color:#8ca4b8;
+
+}
+
+.dev-badge{
+
+    padding:9px 14px;
+
+    border-radius:999px;
+
+    background:rgba(56,189,248,.12);
+
+    border:1px solid rgba(31, 170, 230, 0.801);
+
+    color:#67e8f9;
+
+    font-size:12px;
+
+    font-weight:700;
+
+    letter-spacing:1.4px;
+
+    text-transform:uppercase;
+
+    backdrop-filter:blur(10px);
+
+    box-shadow:
+        0 0 20px rgba(56,189,248,.10);
+
+}
+
+

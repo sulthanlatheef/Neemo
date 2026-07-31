@@ -7,7 +7,9 @@ import websockets
 # Configuration
 # ------------------------------------------------------------------
 
-WS_URL = "ws://localhost:5000/figmaimport/convert/ws"
+WS_URL_DEV = "wss://formsaiplugin.unysite.com/figmaimport/convert/ws"
+
+WS_URL_LOCAL = "ws://localhost:5000/figmaimport/convert/ws"
 
 MINT_URL = "https://formsaiplugin.unysite.com/figmaimport/auth/token"
 
@@ -49,11 +51,17 @@ def get_fresh_token():
 # WebSocket Helpers
 # ------------------------------------------------------------------
 
-async def connect():
+async def connect(env):
     token = get_fresh_token()
+    
+    if env.lower() == "local":
+        CONNECT_URL = WS_URL_LOCAL
+    elif env.lower() == "dev":
+        CONNECT_URL = WS_URL_DEV
+    
 
     ws = await websockets.connect(
-        WS_URL,
+        CONNECT_URL,
         additional_headers={
             "Authorization": f"Bearer {token}"
         },
@@ -89,9 +97,9 @@ async def receive(ws):
 # Submit URL
 # ------------------------------------------------------------------
 
-async def submit_url(figma_url):
+async def submit_url(figma_url,environment):
 
-    ws = await connect()
+    ws = await connect(environment)
 
     try:
 
@@ -129,9 +137,9 @@ async def submit_url(figma_url):
 # Convert
 # ------------------------------------------------------------------
 
-async def convert(file_key, frame_name):
+async def convert(file_key, frame_name,environment):
 
-    ws = await connect()
+    ws = await connect(environment)
 
     try:
 
