@@ -5371,5 +5371,13 @@ false
         0 0 20px rgba(56,189,248,.10);
 
 }
+body {
+    min-height: 100vh;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
 
 
+.dashboard {
+    min-height: 100vh;
+}
