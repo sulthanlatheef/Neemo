@@ -5591,3 +5591,19 @@ body {
     }
 
 }
+
+.sidebar{
+    width:20%;
+    min-width:270px;
+    max-width:360px;
+}
+
+.dev-console{
+    width:24%;
+    min-width:320px;
+    max-width:420px;
+}
+
+.main{
+    flex:1;
+}
