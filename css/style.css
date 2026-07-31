@@ -5381,3 +5381,213 @@ body {
 .dashboard {
     min-height: 100vh;
 }
+
+/* ==========================================================
+   RESPONSIVE LAYOUT
+   ========================================================== */
+
+/* -------------------------
+   Medium laptops
+   ------------------------- */
+@media (max-width: 1700px) {
+
+    .dashboard{
+        gap:18px;
+        padding:18px;
+    }
+
+    .sidebar{
+        width:320px;
+    }
+
+    .dev-console{
+        width:360px;
+    }
+
+    .topbar{
+        padding:18px;
+    }
+
+    .panel,
+    .glass{
+        border-radius:20px;
+    }
+
+    .performance-panel{
+        height:190px;
+    }
+
+    .stats{
+        gap:14px;
+    }
+
+}
+
+/* -------------------------
+   14-15 inch laptops
+   ------------------------- */
+@media (max-width: 1550px) {
+
+    body{
+        font-size:14px;
+    }
+
+    .dashboard{
+        gap:14px;
+        padding:14px;
+    }
+
+    .sidebar{
+        width:285px;
+    }
+
+    .dev-console{
+        width:330px;
+    }
+
+    .logo-box{
+        padding:18px;
+    }
+
+    .logo-box h1{
+        font-size:28px !important;
+    }
+
+    .logo-box p{
+        font-size:12px !important;
+    }
+
+    .panel{
+        padding:18px;
+    }
+
+    button{
+        padding:12px;
+    }
+
+    input{
+        padding:12px 14px;
+    }
+
+    .performance-panel{
+        height:175px;
+    }
+
+    .topbar{
+        padding:18px;
+    }
+
+    .nemo-title{
+        font-size:24px;
+    }
+
+    .stat-card{
+        padding:16px;
+    }
+
+}
+
+/* -------------------------
+   Low height displays
+   ------------------------- */
+@media (max-height: 950px){
+
+    .dashboard{
+        gap:14px;
+        padding:14px;
+    }
+
+    .panel{
+        padding:18px;
+    }
+
+    .logo-box{
+        padding:18px;
+    }
+
+    .performance-panel{
+        height:170px;
+    }
+
+    .response-wrapper{
+        padding:16px;
+    }
+
+    pre{
+        padding:18px;
+        font-size:13px;
+    }
+
+    .dev-btn{
+        height:42px;
+        font-size:13px;
+    }
+
+    .nemo-control-btn{
+        height:54px;
+        font-size:15px;
+    }
+
+}
+
+/* -------------------------
+   Small laptop height
+   ------------------------- */
+@media (max-height: 820px){
+
+    .dashboard{
+        gap:10px;
+        padding:10px;
+    }
+
+    .sidebar{
+        width:265px;
+    }
+
+    .dev-console{
+        width:305px;
+    }
+
+    .logo-box{
+        padding:14px;
+    }
+
+    .logo-box h1{
+        font-size:24px !important;
+    }
+
+    .panel{
+        padding:14px;
+    }
+
+    .performance-panel{
+        height:150px;
+    }
+
+    .topbar{
+        padding:14px;
+    }
+
+    .stat-card{
+        padding:12px;
+    }
+
+    .response-wrapper{
+        padding:12px;
+    }
+
+    pre{
+        padding:14px;
+        font-size:12px;
+    }
+
+    button{
+        padding:10px;
+    }
+
+    input{
+        padding:10px 12px;
+        margin-bottom:12px;
+    }
+
+}
