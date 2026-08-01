@@ -187,7 +187,7 @@
     <i class="fa-solid fa-play"></i>
 
     <span id="startNemoText">
-        Start Nemo
+        Start Neemo
     </span>
 
 </button>
@@ -200,9 +200,13 @@
 
     <i class="fa-solid fa-power-off"></i>
 
-    Stop Nemo
+    Stop Neemo
 
 </button>
+<div class="nemo-footer">
+    © 2026 <span>Neemo v1.0 Beta </span> • All Rights Reserved
+</div>
+
     </div>
     <!-- DEV CONSOLE -->
 

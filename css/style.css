@@ -5100,7 +5100,7 @@ false
 .switch {
     position: relative;
     width: 54px;
-    height: 26px;
+    height: 25px;
 }
 
 .slider::before {
@@ -5494,7 +5494,7 @@ body {
 @media (max-height: 950px){
 
     .dashboard{
-        gap:14px;
+        gap:17px;
         padding:14px;
     }
 
@@ -5521,18 +5521,18 @@ body {
 
     .dev-btn{
         height:42px;
-        font-size:13px;
+        font-size:14.2px;
     }
 
     .nemo-control-btn{
-        height:54px;
-        font-size:15px;
+        height:50px;
+        font-size:16px;
     }
 
 }
 .performance-panel{
 
-    height:190px;
+    height:210px;
 
     padding:12px;
 
@@ -5564,20 +5564,20 @@ body {
 
 .weather-icon{
 
-    width:24px;
-    height:24px;
+    width:24.5px;
+    height:24.5px;
 
     font-size:12px;
 }
 
 .weather-temp{
 
-    font-size:13px;
+    font-size:13.5px;
 }
 
 .weather-location{
 
-    font-size:8px;
+    font-size:10px;
 
     height:18px;
 }
@@ -5658,4 +5658,49 @@ body {
 
 .main{
     flex:1;
+}
+.nemo-footer{
+
+    margin-top:5px;
+
+    text-align:center;
+
+    font-size:14.4px;
+
+    letter-spacing:1px;
+
+    color:rgba(255,255,255,0.35);
+
+    user-select:none;
+
+    transition:0.25s ease;
+
+    white-space:nowrap;
+}
+
+.nemo-footer span{
+
+    color:#7dd3fc;
+
+    font-weight:700;
+
+    text-shadow:
+        0 0 10px rgba(0,245,255,0.15);
+}
+
+.nemo-footer:hover{
+
+    color:rgba(255,255,255,0.55);
+}
+@media (max-height:900px){
+
+    #serverAnimation{
+
+        width:140px;
+        height:140px;
+
+        right:-10px;
+        top:0;
+    }
+
 }
