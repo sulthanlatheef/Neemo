@@ -5692,15 +5692,156 @@ body {
 
     color:rgba(255,255,255,0.55);
 }
-@media (max-height:900px){
 
-    #serverAnimation{
+/* -------------------------
+   Ultra Compact Height
+   (768p @ 100% Browser Zoom)
+   ------------------------- */
+@media (max-height:740px){
 
-        width:140px;
-        height:140px;
-
-        right:-10px;
-        top:0;
+    .dashboard{
+        gap:6px;
+        padding:6px;
     }
 
+    .sidebar{
+        width:245px;
+    }
+
+    .dev-console{
+        width:280px;
+    }
+
+    .logo-box{
+        padding:10px;
+    }
+
+    .logo-box h1{
+        font-size:20px !important;
+        margin-bottom:2px;
+    }
+
+    .logo-box p{
+        font-size:10px !important;
+        letter-spacing:1px;
+    }
+
+    .status{
+        margin-top:10px;
+        padding:5px 10px;
+        font-size:10px;
+    }
+
+    .panel{
+        padding:10px;
+    }
+
+    .panel-title{
+        font-size:13px;
+        margin-bottom:10px;
+    }
+
+    input{
+        padding:8px 10px;
+        margin-bottom:8px;
+        font-size:12px;
+    }
+
+    button{
+        padding:8px;
+        font-size:12px;
+    }
+
+    .dev-btn{
+        height:34px;
+        font-size:11px;
+    }
+
+    .nemo-control-btn{
+        height:42px;
+        font-size:13px;
+        border-radius:16px;
+    }
+
+    .performance-panel{
+        height:160px;
+        padding:10px;
+    }
+
+    .performance-title{
+        font-size:10px;
+    }
+
+    .weather-mini{
+        transform:scale(.85);
+        transform-origin:right center;
+    }
+
+    .topbar{
+        padding:10px;
+    }
+
+    .nemo-title{
+        font-size:20px;
+        margin-bottom:2px;
+    }
+
+    .nemo-subtitle{
+        font-size:11px;
+    }
+
+    .stats{
+        gap:8px;
+    }
+
+    .stat-card{
+        padding:10px;
+    }
+
+    .stat-label{
+        font-size:10px;
+        margin-bottom:4px;
+    }
+
+    .stat-value{
+        font-size:12px;
+    }
+
+    .response-wrapper{
+        padding:8px;
+    }
+
+    pre{
+        padding:10px;
+        font-size:11px;
+        line-height:1.45;
+    }
+
+    #serverAnimation{
+        width:110px;
+        height:110px;
+        right:-8px;
+        top:-8px;
+    }
+
+    .custom-select{
+        margin-bottom:8px;
+    }
+
+    .select-header{
+        padding:10px 12px;
+    }
+
+    .dropdown-item{
+        padding:10px 12px;
+    }
+
+    .response-timer{
+        transform:scale(.85);
+        transform-origin:center;
+    }
+
+    .copy-btn{
+        padding:8px 14px;
+    }
 }
