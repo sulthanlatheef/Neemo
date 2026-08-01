@@ -5383,6 +5383,41 @@ body {
     min-height: 100vh;
 }
 
+.nemo-footer{
+
+    margin-top:5px;
+
+    text-align:center;
+
+    font-size:14.4px;
+
+    letter-spacing:1px;
+
+    color:rgba(255,255,255,0.35);
+
+    user-select:none;
+
+    transition:0.25s ease;
+
+    white-space:nowrap;
+}
+
+.nemo-footer span{
+
+    color:#7dd3fc;
+
+    font-weight:700;
+
+    text-shadow:
+        0 0 10px rgba(0,245,255,0.15);
+}
+
+.nemo-footer:hover{
+
+    color:rgba(255,255,255,0.55);
+}
+
+
 /* ==========================================================
    RESPONSIVE LAYOUT
    ========================================================== */
@@ -5641,31 +5676,13 @@ body {
         padding:10px 12px;
         margin-bottom:12px;
     }
-
-}
-
-.sidebar{
-    width:20%;
-    min-width:270px;
-    max-width:360px;
-}
-
-.dev-console{
-    width:24%;
-    min-width:320px;
-    max-width:420px;
-}
-
-.main{
-    flex:1;
-}
-.nemo-footer{
+    .nemo-footer{
 
     margin-top:5px;
 
     text-align:center;
 
-    font-size:14.4px;
+    font-size:11.4px;
 
     letter-spacing:1px;
 
@@ -5691,6 +5708,25 @@ body {
 .nemo-footer:hover{
 
     color:rgba(255,255,255,0.55);
+}
+
+
+}
+
+.sidebar{
+    width:20%;
+    min-width:270px;
+    max-width:360px;
+}
+
+.dev-console{
+    width:24%;
+    min-width:320px;
+    max-width:420px;
+}
+
+.main{
+    flex:1;
 }
 
 /* -------------------------
