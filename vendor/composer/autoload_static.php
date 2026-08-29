@@ -29,6 +29,8 @@ class ComposerStaticInitdf1f81a0630f57ab5fb14da5bc0832c6
         'db2f6d3e039789c7acd0e5d1d5a42077' => __DIR__ . '/..' . '/amphp/http-client/src/functions.php',
         '77e5a577434e31d19d8dd6aeceac1ff4' => __DIR__ . '/..' . '/amphp/http-client/src/Internal/functions.php',
         '3d05d4f147c95ba663000bd908d45656' => __DIR__ . '/..' . '/amphp/websocket/src/functions.php',
+        '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
+        '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
         '4be4fbd9f5a89207b1fd1c85ae339dd7' => __DIR__ . '/..' . '/amphp/websocket-client/src/functions.php',
         '3be16222a6efa6dd226a219eaaff823b' => __DIR__ . '/..' . '/ratchet/pawl/src/functions_include.php',
     );
@@ -41,6 +43,8 @@ class ComposerStaticInitdf1f81a0630f57ab5fb14da5bc0832c6
         'S' =>
         array (
             'Symfony\\Polyfill\\Php80\\' => 23,
+            'Symfony\\Polyfill\\Mbstring\\' => 26,
+            'Symfony\\Polyfill\\Ctype\\' => 23,
         ),
         'R' =>
         array (
@@ -60,6 +64,7 @@ class ComposerStaticInitdf1f81a0630f57ab5fb14da5bc0832c6
             'Psr\\Http\\Message\\' => 17,
             'Phrity\\Util\\' => 12,
             'Phrity\\Net\\' => 11,
+            'PhpOption\\' => 10,
         ),
         'L' =>
         array (
@@ -73,10 +78,15 @@ class ComposerStaticInitdf1f81a0630f57ab5fb14da5bc0832c6
         'G' =>
         array (
             'GuzzleHttp\\Psr7\\' => 16,
+            'GrahamCampbell\\ResultType\\' => 26,
         ),
         'E' =>
         array (
             'Evenement\\' => 10,
+        ),
+        'D' =>
+        array (
+            'Dotenv\\' => 7,
         ),
         'A' =>
         array (
@@ -105,6 +115,14 @@ class ComposerStaticInitdf1f81a0630f57ab5fb14da5bc0832c6
         'Symfony\\Polyfill\\Php80\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-php80',
+        ),
+        'Symfony\\Polyfill\\Mbstring\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/symfony/polyfill-mbstring',
+        ),
+        'Symfony\\Polyfill\\Ctype\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/symfony/polyfill-ctype',
         ),
         'Revolt\\' =>
         array (
@@ -159,6 +177,10 @@ class ComposerStaticInitdf1f81a0630f57ab5fb14da5bc0832c6
         array (
             0 => __DIR__ . '/..' . '/phrity/net-uri/src',
         ),
+        'PhpOption\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/phpoption/phpoption/src/PhpOption',
+        ),
         'LibDNS\\' =>
         array (
             0 => __DIR__ . '/..' . '/daverandom/libdns/src',
@@ -177,9 +199,17 @@ class ComposerStaticInitdf1f81a0630f57ab5fb14da5bc0832c6
         array (
             0 => __DIR__ . '/..' . '/guzzlehttp/psr7/src',
         ),
+        'GrahamCampbell\\ResultType\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/graham-campbell/result-type/src',
+        ),
         'Evenement\\' =>
         array (
             0 => __DIR__ . '/..' . '/evenement/evenement/src',
+        ),
+        'Dotenv\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/vlucas/phpdotenv/src',
         ),
         'Amp\\Websocket\\Client\\' =>
         array (

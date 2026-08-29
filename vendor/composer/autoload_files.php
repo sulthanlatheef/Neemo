@@ -28,6 +28,8 @@ return array(
     'db2f6d3e039789c7acd0e5d1d5a42077' => $vendorDir . '/amphp/http-client/src/functions.php',
     '77e5a577434e31d19d8dd6aeceac1ff4' => $vendorDir . '/amphp/http-client/src/Internal/functions.php',
     '3d05d4f147c95ba663000bd908d45656' => $vendorDir . '/amphp/websocket/src/functions.php',
+    '320cde22f66dd4f5d3fd621d3e88b98f' => $vendorDir . '/symfony/polyfill-ctype/bootstrap.php',
+    '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => $vendorDir . '/symfony/polyfill-mbstring/bootstrap.php',
     '4be4fbd9f5a89207b1fd1c85ae339dd7' => $vendorDir . '/amphp/websocket-client/src/functions.php',
     '3be16222a6efa6dd226a219eaaff823b' => $vendorDir . '/ratchet/pawl/src/functions_include.php',
 );

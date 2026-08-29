@@ -5881,3 +5881,2316 @@ body {
         padding:8px 14px;
     }
 }
+
+/* ===========================
+   MODAL
+=========================== */
+
+.update-modal{
+
+    position:fixed;
+
+    inset:0;
+
+    display:none;
+
+    justify-content:center;
+
+    align-items:center;
+
+    background:rgba(2,8,20,.82);
+
+    backdrop-filter:blur(14px);
+
+    z-index:999999;
+
+}
+
+.update-window{
+
+    position:relative;
+
+    width:920px;
+
+    padding:28px 42px 34px;
+
+    border-radius:28px;
+
+    overflow:hidden;
+
+    background:
+    linear-gradient(
+        160deg,
+        rgba(18,25,42,.97),
+        rgba(10,15,25,.98)
+    );
+
+    border:1px solid rgba(255,255,255,.08);
+
+    box-shadow:
+
+        0 35px 90px rgba(0,0,0,.55),
+
+        0 0 70px rgba(0,229,255,.08);
+
+}
+
+
+/* ===========================
+   ANIMATED BORDER
+=========================== */
+
+.gradient-border{
+
+    position:absolute;
+
+    inset:0;
+
+    border-radius:28px;
+
+    padding:1px;
+
+    background:
+
+    linear-gradient(
+        90deg,
+        #00e5ff,
+        #7c3aed,
+        #00e5ff
+    );
+
+    background-size:300%;
+
+    animation:borderMove 7s linear infinite;
+
+    -webkit-mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+
+    -webkit-mask-composite:xor;
+
+    pointer-events:none;
+
+}
+
+@keyframes borderMove{
+
+    to{
+
+        background-position:300%;
+
+    }
+
+}
+
+
+/* ===========================
+   HERO
+=========================== */
+
+.hero-wrapper{
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+}
+
+#updateLottie{
+
+    width:170px;
+
+    height:170px;
+    
+
+
+}
+
+.update-badge{
+
+    margin-top:-10px;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    padding:10px 18px;
+
+    border-radius:30px;
+
+    background:rgba(0,229,255,.12);
+
+    border:1px solid rgba(0,229,255,.25);
+
+    color:#74ecff;
+
+    font-size:13px;
+
+    font-weight:700;
+
+    letter-spacing:2px;
+
+}
+
+.pulse{
+
+    width:8px;
+
+    height:8px;
+
+    border-radius:50%;
+
+    background:#00ff99;
+
+    box-shadow:0 0 12px #00ff99;
+
+    animation:pulse 1.5s infinite;
+
+}
+
+@keyframes pulse{
+
+    50%{
+
+        transform:scale(1.6);
+
+        opacity:.4;
+
+    }
+
+}
+
+
+/* ===========================
+   TEXT
+=========================== */
+
+.update-title{
+
+    margin-top:16px;
+
+    text-align:center;
+
+    font-size:36px;
+
+    font-weight:900;
+
+    letter-spacing:-1px;
+
+    background:
+
+    linear-gradient(
+        90deg,
+        #ffffff 0%,
+        #b8f5ff 40%,
+        #7dd3fc 100%
+    );
+
+    -webkit-background-clip:text;
+
+    -webkit-text-fill-color:transparent;
+
+}
+
+.update-subtitle{
+
+    margin:14px auto 0;
+
+    width:640px;
+
+    text-align:center;
+
+    color:#9fb3d2;
+
+    line-height:28px;
+
+}
+
+
+/* ===========================
+   VERSION
+=========================== */
+
+.version-section{
+
+    margin:28px auto;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    gap:18px;
+
+}
+
+.version-box{
+
+    width:165px;
+
+    padding:12px;
+
+    text-align:center;
+
+    border-radius:16px;
+
+    background:rgba(255,255,255,.05);
+
+    border:1px solid rgba(255,255,255,.08);
+
+}
+
+.latest{
+
+    border-color:#00e5ff;
+
+    box-shadow:0 0 100px rgba(0,229,255,.16);
+
+}
+
+.version-caption{
+
+    color:#8ca5c5;
+
+    font-size:11px;
+
+    text-transform:uppercase;
+
+    letter-spacing:2px;
+
+}
+
+.version-number{
+
+    margin-top:10px;
+
+    font-family:"JetBrains Mono", monospace;
+
+    font-size:25.5px;
+
+    font-weight:700;
+
+    letter-spacing:-1px;
+
+    color:white;
+
+}
+
+.version-transfer{
+
+    width:90px;
+
+    position:relative;
+
+}
+
+.transfer-line{
+
+    height:4px;
+
+    border-radius:20px;
+
+    background:
+
+    linear-gradient(
+        90deg,
+        transparent,
+        #00e5ff,
+        #7c3aed,
+        #00e5ff,
+        transparent
+    );
+
+    background-size:300%;
+
+    animation:flow 2.5s linear infinite;
+
+}
+
+.transfer-arrow{
+
+    position:absolute;
+
+    right:-2px;
+
+    top:-11px;
+
+    color:#00e5ff;
+
+    font-size:18px;
+
+}
+
+@keyframes flow{
+
+    to{
+
+        background-position:300%;
+
+    }
+
+}
+.version-box{
+
+    background:#101420;
+
+    border:1px solid #263148;
+
+}
+
+.latest{
+
+    background:
+
+    linear-gradient(
+        135deg,
+        #002f45,
+        #291749
+    );
+
+    border:1px solid #00e5ff;
+
+}
+
+.version-number{
+
+    color:#7ff8ff;
+
+    text-shadow:
+
+    0 0 20px rgba(0,229,255,.5);
+
+}.version-box{
+
+    background:#101420;
+
+    border:1px solid #263148;
+
+}
+
+.latest{
+
+    background:
+
+    linear-gradient(
+        135deg,
+        #002f45,
+        #291749
+    );
+
+    border:2px solid #00e5ff;
+
+}
+
+.version-number{
+
+    color:#7ff8ff;
+
+    text-shadow:
+
+    0 0 20px rgba(0,229,255,.5);
+
+}
+
+
+
+/* ===========================
+   RELEASES
+=========================== */
+
+.whats-new{
+
+    margin-top:-5px;
+
+}
+
+
+.section-header{
+    
+
+    display:inline-flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    padding:7px 18px;
+    margin-left:310px;
+
+    margin-bottom:12px;
+
+    border-radius:50px;
+
+     background:
+
+    linear-gradient(
+        90deg,
+        #ffffff 0%,
+        #b8f5ff 40%,
+        #7dd3fc 100%
+    );
+
+    -webkit-background-clip:text;
+
+    -webkit-text-fill-color:transparent;
+
+    border:1px solid rgba(255,255,255,.08);
+
+    color:white;
+
+    font-size:18px;
+
+    font-weight:900;
+
+}
+
+
+.section-icon{
+
+    font-size:22px;
+
+}
+
+.release-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(2,1fr);
+
+    gap:14px;
+
+}
+
+.release-item{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:14px;
+
+    padding:10px;
+
+    border-radius:16px;
+
+    background:
+
+    linear-gradient(
+        145deg,
+        rgba(255,255,255,.05),
+        rgba(255,255,255,.025)
+    );
+
+    border:1px solid rgba(255,255,255,.06);
+
+    transition:.3s;
+
+}
+
+
+
+.release-icon{
+
+    flex-shrink:0;
+
+    width:42px;
+
+    height:42px;
+
+    border-radius:12px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    font-size:20px;
+
+    background:
+
+    linear-gradient(
+        135deg,
+        rgba(0,229,255,.18),
+        rgba(124,58,237,.16)
+    );
+
+}
+
+.release-text{
+
+    color:#dbe8ff;
+
+    font-size:15px;
+
+    line-height:22px;
+
+}
+
+
+/* ===========================
+   BUTTON
+=========================== */
+
+.continue-btn{
+
+    width:100%;
+
+    margin-top:28px;
+
+    height:56px;
+
+    border:none;
+
+    border-radius:16px;
+
+    cursor:pointer;
+
+    font-size:17px;
+
+    font-weight:700;
+
+    color:white;
+
+    background:
+
+    linear-gradient(
+        90deg,
+        #00c6ff,
+        #3b82f6,
+        #7c3aed
+    );
+
+    background-size:200%;
+
+    transition:.35s;
+
+}
+
+.continue-btn:hover{
+
+    background-position:100%;
+
+    transform:translateY(-2px);
+
+    box-shadow:
+
+        0 0 30px rgba(0,229,255,.28);
+
+}
+.release-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(2,1fr);
+
+    gap:16px;
+
+}
+
+
+.release-item{
+
+    position:relative;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:18px;
+
+    padding:18px;
+
+    border-radius:20px;
+
+    background:
+    linear-gradient(
+        160deg,
+        rgba(255,255,255,.06),
+        rgba(255,255,255,.025)
+    );
+
+    border:1px solid rgba(255,255,255,.08);
+
+    backdrop-filter:blur(20px);
+
+    overflow:hidden;
+
+}
+
+.release-item::before{
+
+    content:"";
+
+    position:absolute;
+
+    inset:0;
+
+    background:
+
+    radial-gradient(
+        circle at top right,
+        rgba(0,229,255,.12),
+        transparent 55%
+    );
+
+    pointer-events:none;
+
+}
+
+.release-icon{
+
+    width:48px;
+
+    height:48px;
+
+    border-radius:16px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    font-size:20px;
+
+    background:
+
+    linear-gradient(
+        135deg,
+        #00c6ff,
+        #7c3aed
+    );
+
+    box-shadow:
+
+        0 0 18px rgba(0,229,255,.25);
+
+}
+
+.release-text{
+
+    font-size:15px;
+
+    font-weight:1200;
+
+    color:#edf4ff;
+    
+
+}
+.release-item{
+
+    display:flex;
+
+    align-items:center;
+    font-size :17px;
+    font-family:"JetBrains Mono", monospace;
+    
+
+    gap:16px;
+
+    padding:15px;
+
+    border-radius:22px;
+
+    background:rgba(255,255,255,.045);
+
+    border:1px solid rgba(255,255,255,.05);
+
+    box-shadow:
+
+    0 12px 30px rgba(0,0,0,.18);
+
+}
+
+.release-icon{
+
+    width:40px;
+
+    height:40px;
+
+    border-radius:50%;
+
+    background:
+
+    rgba(0,229,255,.12);
+
+    color:#5ce8ff;
+
+}
+.release-item{
+
+    display:flex;
+
+    gap:16px;
+
+    padding:14px;
+
+    border-radius:14px;
+
+    background:#171f31;
+
+    border:1px solid #273247;
+
+}
+
+.release-icon{
+
+    width:35px;
+
+    height:35px;
+
+    border-radius:10px;
+
+    background:#212d45;
+
+}
+/* =====================================================
+   Compact layout for short-height displays
+   (Viewport height below 820px)
+===================================================== */
+
+@media (max-height: 820px) {
+
+    .update-window{
+        width: 900px;
+        max-height: 92vh;
+        overflow-y: auto;
+        padding: 20px 34px 24px;
+    }
+
+    #updateLottie{
+        width: 120px;
+        height: 120px;
+    }
+
+    .update-badge{
+        margin-top: -6px;
+        padding: 8px 16px;
+        font-size: 12px;
+    }
+
+    .update-title{
+        margin-top: 14px;
+        font-size: 30px;
+    }
+
+    .update-subtitle{
+        width: 100%;
+        margin-top: 10px;
+        font-size: 14px;
+        line-height: 24px;
+    }
+
+    .version-section{
+        margin: 18px auto;
+        gap: 14px;
+    }
+
+    .version-box{
+        width: 145px;
+        padding: 10px;
+    }
+
+    .version-number{
+        font-size: 21px;
+    }
+
+    .version-transfer{
+        width: 70px;
+    }
+
+    .section-header{
+        margin-bottom: 16px;
+        margin-left: 0;
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        font-size: 16px;
+    }
+
+    .release-grid{
+        gap: 10px;
+    }
+
+    .release-item{
+        padding: 12px;
+        gap: 12px;
+        border-radius: 16px;
+    }
+
+    .release-icon{
+        width: 34px;
+        height: 34px;
+        font-size: 16px;
+    }
+
+    .release-text{
+        font-size: 14px;
+        line-height: 20px;
+    }
+
+    .continue-btn{
+        margin-top: 10px;
+        height: 50px;
+        font-size: 15px;
+    }
+}
+.update-progress{
+
+    display:none;
+
+    margin-top:20px;
+
+}
+
+.progress-status{
+
+    color:#94a3b8;
+
+    margin-bottom:5px;
+
+    font-size:14px;
+
+}
+
+.progress-bar{
+
+    width:100%;
+
+    height:12px;
+
+    background:#111827;
+
+    border-radius:20px;
+
+    overflow:hidden;
+
+}
+
+.progress-fill{
+
+    width:0%;
+
+    height:100%;
+
+    background:linear-gradient(
+        90deg,
+        #38bdf8,
+        #22c55e
+    );
+
+    transition:width .35s ease;
+
+}
+.update-action-container{
+
+    margin-top:20px;
+
+    min-height:80px;
+
+}
+
+.update-progress-card{
+
+    animation:fadeIn .25s ease;
+
+}
+
+.update-progress-title{
+
+    
+
+    font-family:"Manrope",sans-serif;
+
+    color:#ffffff;
+
+    font-size:18px;
+
+    font-weight:700;
+
+    text-align:center;
+
+    margin-bottom:18px;
+
+    letter-spacing:.3px;
+
+}
+
+.update-progress-status{
+
+    color:#94a3b8;
+
+    text-align:center;
+
+    margin-top:12px;
+
+    font-size:15px;
+
+}
+
+.progress-bar{
+
+    width:100%;
+
+    height:12px;
+
+    background:#111827;
+
+    border-radius:50px;
+
+    overflow:hidden;
+
+}
+
+.progress-fill{
+
+    width:0%;
+
+    height:100%;
+
+    background:linear-gradient(
+        90deg,
+        #38bdf8,
+        #22c55e
+    );
+
+    transition:width .35s ease;
+
+}
+
+.progress-success .progress-fill{
+
+    background:#22c55e;
+
+}
+
+.progress-error .progress-fill{
+
+    background:#f12c2c;
+
+}
+
+.retry-btn{
+
+    margin-top:22px;
+
+    width:100%;
+
+}
+.close-update{
+
+    display:block;
+
+    width:260px;
+
+    margin:35px auto 0;
+
+    padding:14px 24px;
+
+    border:none;
+
+    border-radius:15px;
+
+    background:linear-gradient(
+        50deg,
+        #3b82f6,
+        #06b6d4
+    );
+
+    color:#ffffff;
+
+    font-size:16.8px;
+
+    font-weight:700;
+
+    letter-spacing:.3px;
+
+    cursor:pointer;
+
+    transition:
+        transform .25s,
+        box-shadow .25s,
+        opacity .25s;
+
+    box-shadow:
+        0 10px 30px rgba(59,130,246,.35);
+
+}
+
+.close-update:hover{
+
+    transform:translateY(-2px);
+
+    box-shadow:
+        0 18px 40px rgba(59,130,246,.45);
+
+}
+
+.close-update:active{
+
+    transform:scale(.98);
+
+}
+.update-progress-card{
+
+    width:100%;
+
+    animation:fadeIn .3s ease;
+
+}
+
+.progress-bar{
+
+    position:relative;
+
+    width:100%;
+
+    height:8px;
+
+    overflow:hidden;
+
+    border-radius:50px;
+
+    background:rgba(255,255,255,.08);
+
+}
+.progress-fill{
+
+    position:relative;
+
+    width:0;
+
+    height:100%;
+
+    border-radius:50px;
+
+    transition:width .35s ease;
+
+    background:
+        linear-gradient(
+            90deg,
+            #38bdf8,
+            #06b6d4,
+            #22c55e
+        );
+
+}
+.update-progress-status{
+
+    text-align:center;
+
+    color:#cbd5e1;
+
+    margin-top:18px;
+
+    font-size:15px;
+
+}
+
+
+    
+.progress-fill{
+
+    width:0;
+
+    height:100%;
+
+    border-radius:999px;
+
+    background:linear-gradient(
+        90deg,
+        #38bdf8,
+        #06b6d4,
+        #22c55e
+    );
+
+    transition:
+        width .9s cubic-bezier(.22,1,.36,1);
+
+}
+.progress-fill{
+
+    box-shadow:
+
+        0 0 8px rgba(56,189,248,.45),
+
+        0 0 18px rgba(34,197,94,.20);
+
+}
+
+.progress-bar{
+
+    position:relative;
+
+    overflow:hidden;
+
+    width:100%;
+
+    height:10px;
+
+    border-radius:999px;
+
+    background:
+
+        rgba(255,255,255,.07);
+
+}
+.update-progress-status{
+
+    transition:
+
+        opacity .3s ease;
+
+}
+
+.progress-percent{
+
+    margin-top:18px;
+
+    text-align:center;
+
+    font-size:26px;
+
+    font-weight:700;
+
+    letter-spacing:.5px;
+
+    color:#38bdf8;
+
+    transition:
+        color .3s ease,
+        opacity .3s ease;
+
+}
+.blinking-icon{
+
+    margin-right:6px;
+
+    animation:blinkWarning 1s infinite;
+
+}
+
+@keyframes blinkWarning{
+
+    0%{
+
+        opacity:1;
+
+    }
+
+    50%{
+
+        opacity:.25;
+
+    }
+
+    100%{
+
+        opacity:1;
+
+    }
+
+}
+.update-progress-title i{
+
+    color:#38bdf8;
+    padding-right:6px;
+    font-size:17px;
+   
+    
+
+}
+
+@keyframes softBlink{
+
+    0%{
+
+        opacity:1;
+
+    }
+
+    50%{
+
+        opacity:.35;
+
+    }
+
+    100%{
+
+        opacity:1;
+
+    }
+
+}
+
+.connecting-status{
+
+    color:#38bdf8;
+
+    animation:connectingBlink 1.2s ease-in-out infinite;
+
+    font-weight:700;
+
+}
+
+
+@keyframes connectingBlink{
+
+    0%{
+
+        opacity:1;
+
+    }
+
+    50%{
+
+        opacity:.35;
+
+    }
+
+    100%{
+
+        opacity:1;
+
+    }
+
+}
+
+/* =========================================================
+   NEMO SETTINGS ICON
+========================================================= */
+
+.nemo-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.nemo-settings {
+    cursor: pointer;
+    font-size: 30px;
+    transition:
+        color 0.25s ease,
+        transform 0.25s ease,
+        filter 0.25s ease;
+}
+
+.nemo-settings:hover {
+    transform: scale(1.15);
+}
+.nemo-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.nemo-title {
+    font-size: 28px;
+    font-weight: 800;
+
+    background: linear-gradient(
+        90deg,
+        #00f5ff,
+        #7dd3fc,
+        #8b5cf6
+    );
+
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+
+    letter-spacing: 0.5px;
+    margin: 0;
+
+    text-shadow:
+        0 0 30px rgba(0,245,255,0.25);
+}
+
+.nemo-settings {
+    margin-left:12px;
+    cursor: pointer;
+    font-size: 30.5px;
+
+    transition:
+        color 0.25s ease,
+        transform 0.25s ease,
+        filter 0.25s ease;
+}
+
+.nemo-settings:hover {
+    transform: scale(1.15);
+}
+
+/* =========================================================
+   NEMO SETTINGS MODAL
+========================================================= */
+
+.nemo-settings-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    visibility: hidden;
+    opacity: 0;
+
+    transition:
+        opacity 0.25s ease,
+        visibility 0.25s ease;
+}
+
+.nemo-settings-modal.active {
+    visibility: visible;
+    opacity: 1;
+}
+
+
+/* =========================================================
+   BACKDROP
+========================================================= */
+
+.nemo-settings-backdrop {
+    position: absolute;
+    inset: 0;
+
+    background: rgba(0, 0, 0, 0.62);
+
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+
+/* =========================================================
+   DIALOG
+========================================================= */
+
+.nemo-settings-dialog {
+    position: relative;
+
+    width: min(1060px, calc(100vw - 40px));
+    min-height: 800px;
+    max-height: calc(100vh - 50px);
+
+    overflow: hidden;
+
+    border-radius: 26px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255, 255, 255, 0.075),
+            rgba(255, 255, 255, 0.025)
+        );
+
+    border: 1px solid rgba(255, 255, 255, 0.11);
+
+    box-shadow:
+        0 35px 100px rgba(0, 0, 0, 0.58),
+        0 0 0 1px rgba(255, 255, 255, 0.025);
+
+    backdrop-filter: blur(28px);
+    -webkit-backdrop-filter: blur(28px);
+
+    transform: translateY(18px) scale(0.97);
+
+    transition:
+        transform 0.32s cubic-bezier(.2, .8, .2, 1);
+}
+
+.nemo-settings-modal.active .nemo-settings-dialog {
+    transform: translateY(0) scale(1);
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.nemo-settings-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 24px 28px 21px;
+
+    border-bottom: 1px solid rgba(255, 255, 255, 0.065);
+}
+
+.nemo-settings-heading {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.nemo-settings-title-icon {
+    width: 74px;
+    height: 74px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 13px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255, 255, 255, 0.095),
+            rgba(255, 255, 255, 0.035)
+        );
+
+    border: 1px solid rgba(255, 255, 255, 0.075);
+
+    color: rgba(255, 255, 255, 0.82);
+
+    font-size: 20px;
+
+    box-shadow:
+        inset 0 1px rgba(255, 255, 255, 0.05);
+}
+
+.nemo-settings-heading h2 {
+    margin: 0;
+
+    font-size: 26px;
+    font-weight: 900;
+    letter-spacing: -0.2px;
+     font-family: "JetBrains Mono", monospace;
+
+    background:
+        linear-gradient(
+            90deg,
+            #ffffff,
+            rgba(180, 220, 255, 0.82)
+        );
+
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.nemo-settings-heading span {
+    display: block;
+ font-family: "JetBrains Mono", monospace;
+    margin-top: 4px;
+
+    color: rgba(255, 255, 255, 0.36);
+
+    font-size: 16.5px;
+    letter-spacing: 0.1px;
+}
+
+
+/* =========================================================
+   CLOSE BUTTON
+========================================================= */
+
+.nemo-settings-close {
+    width: 34px;
+    height: 34px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 0;
+    border-radius: 10px;
+
+    background: transparent;
+
+    color: rgba(255, 255, 255, 0.45);
+
+    cursor: pointer;
+
+    font-size: 17px;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.nemo-settings-close:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: #ffffff;
+
+    transform: scale(1.08);
+}
+
+
+/* =========================================================
+   SETTINGS TABS
+   Selected tab highlights itself.
+   No separate indicator element required.
+========================================================= */
+
+.nemo-settings-tabs {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+
+    gap: 15px;
+
+    margin: 18px 28px 0;
+    padding: 5px;
+
+    min-height: 53px;
+
+    box-sizing: border-box;
+
+    border-radius: 15px;
+
+    background: rgba(255, 255, 255, 0.025);
+
+    border: 1px solid rgba(255, 255, 255, 0.055);
+
+    box-shadow:
+        inset 0 1px rgba(255, 255, 255, 0.025);
+}
+
+.nemo-settings-tab {
+    width: 100%;
+    height: 53px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+
+    padding: 0 14px;
+
+    border: 1px solid transparent;
+    border-radius: 11px;
+
+    background: transparent;
+
+    color: rgba(255, 255, 255, 0.35);
+
+    cursor: pointer;
+
+    font-family: inherit;
+     font-family: "JetBrains Mono", monospace;
+    font-size: 17px;
+    font-weight: 700;
+
+    white-space: nowrap;
+
+    transition:
+        color 0.22s ease,
+        background 0.22s ease,
+        border-color 0.22s ease,
+        box-shadow 0.22s ease,
+        transform 0.22s ease;
+}
+
+.nemo-settings-tab:hover {
+    color: rgba(255, 255, 255, 0.72);
+
+    background: rgba(255, 255, 255, 0.035);
+
+    border-color: rgba(255, 255, 255, 0.035);
+}
+
+.nemo-settings-tab.active {
+    color: #ffffff;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255, 255, 255, 0.105),
+            rgba(255, 255, 255, 0.05)
+        );
+
+    border-color: rgba(255, 255, 255, 0.075);
+
+    box-shadow:
+        0 4px 14px rgba(0, 0, 0, 0.16),
+        inset 0 1px rgba(255, 255, 255, 0.045);
+}
+
+.nemo-settings-tab i {
+    font-size: 19px;
+
+    opacity: 0.65;
+
+    transition:
+        opacity 0.22s ease,
+        transform 0.22s ease;
+}
+
+.nemo-settings-tab.active i {
+    opacity: 1;
+    transform: scale(1.06);
+}
+
+
+/* =========================================================
+   CONTENT
+========================================================= */
+
+.nemo-settings-content {
+    min-height: 550px;
+
+    padding: 34px 38px 38px;
+}
+
+.nemo-settings-panel {
+    display: none;
+
+    animation: nemoSettingsPanelIn 0.25s ease;
+}
+
+.nemo-settings-panel.active {
+    display: block;
+}
+
+@keyframes nemoSettingsPanelIn {
+    from {
+        opacity: 0;
+        transform: translateY(7px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* =========================================================
+   USER INFO
+========================================================= */
+
+
+
+.nemo-avatar-placeholder {
+    width: 270px;
+    height: 270px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255, 255, 255, 0.11),
+            rgba(255, 255, 255, 0.035)
+        );
+
+    border: 1px solid rgba(255, 255, 255, 0.12);
+
+    box-shadow:
+        0 10px 35px rgba(0, 0, 0, 0.25),
+        inset 0 0 20px rgba(255, 255, 255, 0.025);
+
+    color: rgba(255, 255, 255, 0.55);
+
+    font-size: 28px;
+}
+#nemoVersion {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 20px;
+    font-weight: 900;
+    letter-spacing: 0.4px;
+
+    background: linear-gradient(
+        90deg,
+        #8b5cf6,
+        #06b6d4
+    );
+
+    -webkit-background-clip: text;
+    background-clip: text;
+
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+}
+.nemo-user-name {
+    text-align: center;
+
+      font-family: "JetBrains Mono", monospace;
+
+    font-size: 21px;
+    font-weight: 800;
+
+    letter-spacing: 0.2px;
+
+    color: #ffffff;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255,255,255,0.08),
+            rgba(255,255,255,0.025)
+        );
+
+    padding: 7px 18px;
+
+    border-radius: 12px;
+
+    width: fit-content;
+    margin: 0 auto;
+
+    border: 1px solid rgba(255,255,255,0.08);
+
+    box-shadow:
+        0 6px 20px rgba(0,0,0,0.20);
+
+    backdrop-filter: blur(10px);
+}
+
+.nemo-user-subtitle {
+    margin-top: 4px;
+
+    text-align: center;
+    
+
+    color: rgba(255, 255, 255, 0.35);
+
+    font-size: 14px;
+}
+.nemo-user-avatar {
+    margin-left:335px;
+    margin-bottom:20px;
+    width: 310px;
+    height: 310px;
+
+    border-radius: 50%;
+    overflow: hidden;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(255, 255, 255, 0.04);
+
+    border: 2px solid rgba(255, 255, 255, 0.12);
+
+    box-shadow:
+        0 8px 24px rgba(0, 0, 0, 0.25),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+}
+.nemo-avatar-image {
+    width: 91%;
+    height: 91%;
+    margin-bottom:10px;
+
+    display: block;
+    object-fit: contain;
+}
+
+
+
+/* =========================================================
+   USER DETAILS
+========================================================= */
+
+.nemo-user-details {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+
+    gap: 12px;
+
+    margin-top: 32px;
+}
+
+.nemo-user-detail {
+    display: flex;
+    align-items: center;
+
+    gap: 11px;
+
+    padding: 15px;
+
+    min-height: 62px;
+
+    border-radius: 14px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255, 255, 255, 0.045),
+            rgba(255, 255, 255, 0.018)
+        );
+
+    border: 1px solid rgba(255, 255, 255, 0.055);
+
+    transition:
+        background 0.25s ease,
+        border-color 0.25s ease,
+        transform 0.25s ease;
+}
+
+.nemo-user-detail:hover {
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255, 255, 255, 0.065),
+            rgba(255, 255, 255, 0.025)
+        );
+
+    border-color: rgba(255, 255, 255, 0.09);
+
+    transform: translateY(-2px);
+}
+
+.nemo-detail-icon {
+    width: 50px;
+    height: 50px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 9px;
+
+    background: rgba(255, 255, 255, 0.055);
+
+    color: rgba(255, 255, 255, 0.55);
+
+    font-size: 15px;
+}
+
+.nemo-detail-content {
+    display: flex;
+    flex-direction: column;
+
+
+    gap: 4px;
+}
+
+.nemo-detail-label {
+    color: rgba(255, 255, 255, 0.35);
+     font-family: "JetBrains Mono", monospace;
+
+    
+
+    font-size: 17.5px;
+}
+
+.nemo-detail-content strong {
+    color: rgba(255, 255, 255, 0.88);
+     font-family: "JetBrains Mono", monospace;
+       
+
+    font-size: 19.5px;
+    font-weight: 900;
+}
+
+
+/* =========================================================
+   USAGE STATISTICS
+========================================================= */
+
+.nemo-usage-header {
+    text-align: center;
+}
+
+.nemo-usage-header h3 {
+    margin: 0;
+    
+
+    color: #ffffff;
+font-family: "JetBrains Mono", monospace;
+    font-size: 23px;
+    font-weight: 900;
+}
+
+.nemo-usage-header span {
+    display: block;
+
+    margin-top: 6px;
+
+    color: rgba(255, 255, 255, 0.38);
+
+    font-size: 13.5px;
+}
+
+.nemo-usage-circle {
+    width: 320px;
+    height: 320px;
+
+    margin: 34px auto 24px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background:
+        conic-gradient(
+            rgba(255, 255, 255, 0.72) 0deg,
+            rgba(255, 255, 255, 0.72) 0deg,
+            rgba(255, 255, 255, 0.045) 0deg
+        );
+
+    position: relative;
+
+    box-shadow:
+        0 15px 45px rgba(0, 0, 0, 0.2);
+}
+
+.nemo-usage-circle::before {
+    content: "";
+
+    position: absolute;
+
+    inset: 8px;
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(255, 255, 255, 0.035),
+            rgba(255, 255, 255, 0.012)
+        );
+
+    border: 1px solid rgba(255, 255, 255, 0.045);
+}
+
+.nemo-usage-circle-inner {
+    position: relative;
+    z-index: 1;
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+}
+
+.nemo-usage-circle-inner strong {
+    color: #ffffff;
+font-family: "JetBrains Mono", monospace;
+ background: linear-gradient(
+        90deg,
+        #8b5cf6,
+        #06b6d4
+    );
+
+    -webkit-background-clip: text;
+    background-clip: text;
+
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    font-size: 60px;
+    line-height: 1;
+
+    font-weight: 900;
+    letter-spacing: -1px;
+}
+
+.nemo-usage-circle-inner span {
+    margin-top: 8px;
+
+    color: rgba(255, 255, 255, 0.4);
+
+    font-size: 15px;
+}
+
+.nemo-usage-description {
+    text-align: center;
+
+    color: rgba(255, 255, 255, 0.35);
+
+    font-size: 16px;
+}
+
+
+/* =========================================================
+   BUG REPORT
+========================================================= */
+
+.nemo-bug-header {
+    display: flex;
+    align-items: center;
+
+    gap: 14px;
+
+    margin-bottom: 28px;
+}
+
+.nemo-bug-icon {
+    width: 50px;
+    height: 50px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 13px;
+
+    background: rgba(255, 255, 255, 0.06);
+
+    color: rgba(255, 255, 255, 0.7);
+
+    font-size: 26px;
+}
+
+.nemo-bug-header h3 {
+    margin: 0;
+    font-family: "JetBrains Mono", monospace;
+
+    color: #ffffff;
+
+    font-size: 25px;
+    font-weight: 800;
+}
+
+.nemo-bug-header span {
+    display: block;
+    font-family: "JetBrains Mono", monospace;
+
+    margin-top: 3px;
+
+    color: rgba(255, 255, 255, 0.38);
+
+    font-size: 15.6px;
+}
+
+
+/* =========================================================
+   FORM
+========================================================= */
+
+.nemo-form-group {
+    margin-bottom: 18px;
+}
+
+.nemo-form-group label {
+    display: block;
+
+    margin-bottom: 7px;
+
+    color: rgba(255, 255, 255, 0.55);
+
+    font-size: 16.5px;
+}
+
+.nemo-form-group input,
+.nemo-form-group textarea {
+    width: 100%;
+
+    box-sizing: border-box;
+
+    border: 1px solid rgba(255, 255, 255, 0.075);
+
+    border-radius: 11px;
+
+    outline: none;
+
+    background: rgba(255, 255, 255, 0.035);
+
+    color: #ffffff;
+
+    font-family: inherit;
+    font-size: 16.5px;
+
+    transition:
+        border-color 0.2s ease,
+        background 0.2s ease;
+}
+
+.nemo-form-group input {
+    height: 46px;
+
+    padding: 0 14px;
+}
+
+.nemo-form-group textarea {
+    min-height: 125px;
+
+    padding: 13px 14px;
+
+    resize: vertical;
+}
+
+.nemo-form-group input::placeholder,
+.nemo-form-group textarea::placeholder {
+    color: rgba(255, 255, 255, 0.22);
+}
+
+.nemo-form-group input:focus,
+.nemo-form-group textarea:focus {
+    border-color: rgba(255, 255, 255, 0.2);
+
+    background: rgba(255, 255, 255, 0.05);
+}
+
+
+/* =========================================================
+   RAISE BUG BUTTON
+========================================================= */
+
+.nemo-raise-bug-btn {
+    width: 170px;
+    height: 50px;
+    
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+
+    border: 1px solid rgba(0, 174, 255, 0.45);
+    border-radius: 11px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(0, 174, 255, 0.18),
+            rgba(0, 110, 255, 0.08)
+        );
+
+    color: #6fd8ff;
+
+    cursor: pointer;
+
+      font-family: "JetBrains Mono", monospace;
+    font-size: 20px;
+    font-weight: 900;
+
+    box-shadow:
+        0 0 0 1px rgba(0, 174, 255, 0.04),
+        0 0 12px rgba(0, 174, 255, 0.12);
+
+    backdrop-filter: blur(8px);
+
+    transition:
+        transform 0.22s ease,
+        background 0.22s ease,
+        border-color 0.22s ease,
+        box-shadow 0.22s ease,
+        color 0.22s ease;
+}
+
+
+.nemo-raise-bug-btn:hover {
+    transform: translateY(-2px);
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(0, 174, 255, 0.28),
+            rgba(0, 110, 255, 0.14)
+        );
+
+    color: #ffffff;
+
+    border-color:
+        rgba(0, 190, 255, 0.75);
+
+    box-shadow:
+        0 0 18px rgba(0, 174, 255, 0.28),
+        0 8px 24px rgba(0, 0, 0, 0.22);
+}
+
+
+.nemo-raise-bug-btn:active {
+    transform: translateY(0);
+
+    box-shadow:
+        0 0 10px rgba(0, 174, 255, 0.18);
+}
+.nemo-raise-bug-btn i {
+    font-size: 18px;
+
+    color: #38c8ff;
+
+    filter:
+        drop-shadow(
+            0 0 5px rgba(0, 190, 255, 0.65)
+        );
+
+    transition:
+        transform 0.22s ease,
+        color 0.22s ease;
+}
+
+
+.nemo-raise-bug-btn:hover i {
+    color: #ffffff;
+
+    transform:
+        translateX(1px)
+        rotate(-8deg);
+
+    filter:
+        drop-shadow(
+            0 0 7px rgba(0, 200, 255, 0.9)
+        );
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 700px) {
+
+    .nemo-settings-dialog {
+        width: calc(100vw - 24px);
+
+        min-height: 0;
+
+        max-height: calc(100vh - 24px);
+
+        border-radius: 20px;
+    }
+
+    .nemo-settings-content {
+        min-height: 420px;
+
+        padding: 26px 20px 28px;
+    }
+    
+
+    .nemo-user-details {
+        grid-template-columns: 1fr;
+    }
+
+    .nemo-settings-tabs {
+        gap: 5px;
+        margin-left: 18px;
+        margin-right: 18px;
+    }
+
+    .nemo-settings-tab {
+        height: 43px;
+        padding: 0 8px;
+    }
+
+    .nemo-settings-tab span {
+        display: none;
+    }
+
+    .nemo-settings-tab {
+        font-size: 15px;
+    }
+
+    .nemo-usage-circle {
+        width: 240px;
+        height: 240px;
+    }
+}
+.nemo-validation-error::placeholder {
+    color: #ef4444 !important;
+    font-weight:600;
+    font-family: "JetBrains Mono", monospace;
+    opacity: 1;
+}

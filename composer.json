@@ -2,6 +2,7 @@
     "require": {
         "textalk/websocket": "^1.6",
         "ratchet/pawl": "^0.4.3",
-        "amphp/websocket-client": "^2.0"
+        "amphp/websocket-client": "^2.0",
+        "vlucas/phpdotenv": "^5.7"
     }
 }

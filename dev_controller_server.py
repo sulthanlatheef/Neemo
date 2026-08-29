@@ -1,12 +1,14 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 import asyncio
+import os
+import requests
 import subprocess
 import threading
 import logging
 import psutil
 import time
-from config import DOCKER_PROJECT_PATH
+from config import DOCKER_PROJECT_PATH,NEMO_PROJECT_PATH,USER_ID
 
 from websocket_client import (
     submit_url,
@@ -37,6 +39,7 @@ environment = "local"
 # ------------------------------------------------------------------
 
 PROJECT_PATH = DOCKER_PROJECT_PATH
+CONTROL_SERVER = "https://neemo-controller-server.onrender.com"
 
 # ------------------------------------------------------------------
 # GLOBAL STATE
@@ -47,6 +50,13 @@ server_process = None
 server_logs = []
 
 server_running = False
+
+# ------------------------------------------------------------------
+# REQUEST TRACKING
+# ------------------------------------------------------------------
+
+total_requests = 0
+request_count_lock = threading.Lock()
 # ------------------------------------------------------------------
 # NETWORK TRACKING
 # ------------------------------------------------------------------
@@ -374,6 +384,11 @@ def load_frames():
         result = asyncio.run(
             submit_url(figma_url,environment)
         )
+        
+        global total_requests
+
+        with request_count_lock:
+            total_requests += 1
 
         return jsonify(result)
 
@@ -419,6 +434,10 @@ def generate_json():
             )
 
         )
+        global total_requests
+
+        with request_count_lock:
+            total_requests += 1
 
         return jsonify(result)
 
@@ -432,8 +451,423 @@ def generate_json():
 
         }), 500
 
+@app.route("/update-client", methods=["POST"])
+def update_client():
 
+    if not os.path.exists(NEMO_PROJECT_PATH):
 
+        return jsonify({
+
+            "status": "error",
+
+            "message": "Nemo project path not found."
+
+        }), 404
+
+    try:
+
+        # -------------------------
+        # Fetch Latest Changes
+        # -------------------------
+
+        fetch_result = subprocess.run(
+
+            [
+                "git",
+                "-c",
+                f"safe.directory={NEMO_PROJECT_PATH}",
+                "fetch",
+                "origin"
+            ],
+
+            cwd=NEMO_PROJECT_PATH,
+
+            capture_output=True,
+
+            text=True,
+
+            check=True
+
+        )
+
+        # -------------------------
+        # Pull Latest Changes
+        # -------------------------
+
+        pull_result = subprocess.run(
+
+            [
+                "git",
+                "-c",
+                f"safe.directory={NEMO_PROJECT_PATH}",
+                "pull",
+                "origin",
+                "main"
+            ],
+
+            cwd=NEMO_PROJECT_PATH,
+
+            capture_output=True,
+
+            text=True,
+
+            check=True
+
+        )
+
+        return jsonify({
+
+            "status": "success",
+
+            "message": "Nemo updated successfully.",
+
+            "fetch_stdout": fetch_result.stdout,
+
+            "fetch_stderr": fetch_result.stderr,
+
+            "pull_stdout": pull_result.stdout,
+
+            "pull_stderr": pull_result.stderr
+
+        })
+
+    except subprocess.CalledProcessError as e:
+
+        return jsonify({
+
+            "status": "error",
+
+            "message": "Git update failed.",
+
+            "stdout": e.stdout,
+
+            "stderr": e.stderr
+
+        }), 500
+# ------------------------------------------------------------
+# REQUEST COUNT
+# ------------------------------------------------------------
+
+@app.get("/request-count")
+def get_request_count():
+
+    global total_requests
+
+    with request_count_lock:
+        count = total_requests
+        total_requests = 0
+
+    return jsonify({
+        "count": count
+    })
+@app.post("/sync-request-count")
+def sync_request_count():
+
+    try:
+
+        data = request.get_json()
+
+        count = data.get("count", 0)
+
+        if not isinstance(count, int) or count <= 0:
+            return jsonify({
+                "status": "error",
+                "message": "Invalid request count."
+            }), 400
+
+        # --------------------------------------------------------
+        # SEND COUNT TO CONTROL SERVER
+        # --------------------------------------------------------
+
+        response = requests.post(
+            f"{CONTROL_SERVER}/sync-request-count",
+            json={
+                "user_id": USER_ID,
+                "count": count
+            },
+            timeout=10
+        )
+
+        # --------------------------------------------------------
+        # CONTROL SERVER ERROR
+        # --------------------------------------------------------
+
+        if not response.ok:
+
+            return jsonify({
+                "status": "error",
+                "message": "Control server rejected request count.",
+                "details": response.text
+            }), response.status_code
+
+        # --------------------------------------------------------
+        # SUCCESS
+        # --------------------------------------------------------
+
+        return jsonify({
+            "status": "success",
+            "count": count
+        })
+
+    except requests.RequestException as e:
+
+        return jsonify({
+            "status": "error",
+            "message": "Unable to connect to control server.",
+            "details": str(e)
+        }), 502
+
+    except Exception as e:
+
+        return jsonify({
+            "status": "error",
+            "message": str(e)
+        }), 500
+
+        
+@app.route("/get-neemo-user-info", methods=["GET"])
+def get_neemo_user_info():
+
+    try:
+
+        # --------------------------------------------------
+        # VALIDATE USER ID
+        # --------------------------------------------------
+
+        if not USER_ID:
+            raise Exception(
+                "NEMO_USER_ID is not configured in environment variables."
+            )
+
+        # --------------------------------------------------
+        # CALL GLOBAL NEMO CONTROLLER
+        # --------------------------------------------------
+
+        response = requests.get(
+            f"{CONTROL_SERVER}/get_neemo_user_name/{USER_ID}",
+            timeout=10
+        )
+
+        # Raise exception for 4xx / 5xx responses
+        response.raise_for_status()
+
+        global_data = response.json()
+
+        # --------------------------------------------------
+        # CHECK GLOBAL SERVER RESPONSE
+        # --------------------------------------------------
+
+        if global_data.get("status") != "success":
+            return jsonify({
+                "status": "error",
+                "message": global_data.get(
+                    "message",
+                    "Failed to retrieve Neemo user information."
+                )
+            }), 400
+
+        user_data = global_data.get("data", {})
+
+        # --------------------------------------------------
+        # RETURN DATA TO FRONTEND
+        # --------------------------------------------------
+
+        return jsonify({
+            "status": "success",
+            "data": {
+                "user_id": USER_ID,
+                "user_name": user_data.get("user_name"),
+                "actual_name": user_data.get("actual_name")
+            }
+        })
+
+    except requests.RequestException as e:
+
+        return jsonify({
+            "status": "error",
+            "message": f"Unable to connect to Neemo Controller Server: {str(e)}"
+        }), 502
+
+    except Exception as e:
+
+        return jsonify({
+            "status": "error",
+            "message": str(e)
+        }), 500
+@app.route("/get-neemo-daily-request-count", methods=["GET"])
+def get_neemo_daily_request_count():
+
+    try:
+
+        # --------------------------------------------------
+        # VALIDATE USER ID
+        # --------------------------------------------------
+
+        if not USER_ID:
+            raise Exception(
+                "NEMO_USER_ID is not configured in environment variables."
+            )
+
+        # --------------------------------------------------
+        # CALL GLOBAL NEMO CONTROLLER
+        # --------------------------------------------------
+
+        response = requests.get(
+            f"{CONTROL_SERVER}/get-daily-request-count/{USER_ID}",
+            timeout=10
+        )
+
+        response.raise_for_status()
+
+        global_data = response.json()
+
+        # --------------------------------------------------
+        # CHECK GLOBAL SERVER RESPONSE
+        # --------------------------------------------------
+
+        if global_data.get("status") != "success":
+
+            return jsonify({
+                "status": "error",
+                "message": global_data.get(
+                    "message",
+                    "Failed to retrieve daily request count."
+                )
+            }), 400
+
+        # --------------------------------------------------
+        # GET REQUEST COUNT
+        # --------------------------------------------------
+
+        request_count = (
+            global_data
+            .get("data", {})
+            .get("requests", 0)
+        )
+
+        # --------------------------------------------------
+        # RETURN TO FRONTEND
+        # --------------------------------------------------
+
+        return jsonify({
+            "status": "success",
+            "data": {
+                "requests": request_count
+            }
+        })
+
+    except requests.RequestException as e:
+
+        return jsonify({
+            "status": "error",
+            "message": (
+                "Unable to connect to Neemo Controller Server: "
+                f"{str(e)}"
+            )
+        }), 502
+
+    except Exception as e:
+
+        return jsonify({
+            "status": "error",
+            "message": str(e)
+        }), 500
+@app.route("/raise-neemo-bug", methods=["POST"])
+def raise_neemo_bug():
+
+    try:
+
+        # --------------------------------------------------
+        # VALIDATE USER ID
+        # --------------------------------------------------
+
+        if not USER_ID:
+            raise Exception(
+                "NEMO_USER_ID is not configured in environment variables."
+            )
+
+        # --------------------------------------------------
+        # GET BUG DATA FROM FRONTEND
+        # --------------------------------------------------
+
+        data = request.get_json(silent=True) or {}
+
+        title = data.get("title", "").strip()
+        description = data.get("description", "").strip()
+
+        # --------------------------------------------------
+        # VALIDATE BUG DATA
+        # --------------------------------------------------
+
+        if not title:
+            return jsonify({
+                "status": "error",
+                "message": "Bug title is required."
+            }), 400
+
+        if not description:
+            return jsonify({
+                "status": "error",
+                "message": "Bug description is required."
+            }), 400
+
+        # --------------------------------------------------
+        # CALL GLOBAL NEMO CONTROLLER
+        # --------------------------------------------------
+
+        response = requests.post(
+            f"{CONTROL_SERVER}/raise-neemo-bug",
+            json={
+                "user_id": USER_ID,
+                "title": title,
+                "description": description
+            },
+            timeout=10
+        )
+
+        response.raise_for_status()
+
+        controller_data = response.json()
+
+        # --------------------------------------------------
+        # CHECK CONTROLLER RESPONSE
+        # --------------------------------------------------
+
+        if controller_data.get("status") != "success":
+
+            return jsonify({
+                "status": "error",
+                "message": controller_data.get(
+                    "message",
+                    "Failed to submit bug."
+                )
+            }), 400
+
+        # --------------------------------------------------
+        # SUCCESS
+        # --------------------------------------------------
+
+        return jsonify({
+            "status": "success",
+            "message": "Bug reported successfully."
+        })
+
+    except requests.RequestException as e:
+
+        return jsonify({
+            "status": "error",
+            "message": (
+                "Unable to connect to Neemo Controller Server: "
+                f"{str(e)}"
+            )
+        }), 502
+
+    except Exception as e:
+
+        return jsonify({
+            "status": "error",
+            "message": str(e)
+        }), 500
 # ------------------------------------------------------------------
 # MAIN
 # ------------------------------------------------------------------

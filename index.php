@@ -331,9 +331,19 @@
 
             <div>
 
+    <div class="nemo-header">
     <h2 class="nemo-title">
         Meet Neemo — The Figma URL Eater
     </h2>
+
+    <i
+        id="nemoSettingsBtn"
+        class="fa-solid fa-gear nemo-settings"
+        title="Settings"
+    ></i>
+</div>
+
+<p class="nemo-subtitle"></p>
 
     <p class="nemo-subtitle">
        
@@ -889,6 +899,489 @@
             id="modalResponseContainer"
             class="modal-response-container"
         ></div>
+
+    </div>
+
+</div>
+<div id="updateModal" class="update-modal">
+
+    <div class="update-window">
+
+        <div class="gradient-border"></div>
+
+        <!-- Hero Animation -->
+        <div class="hero-wrapper">
+
+            <div id="updateLottie">
+                  <lottie-player
+        src="https://lottie.host/ab0016d4-3a15-4882-bdba-9eae6ea6a57e/1hgZTMw6o3.json"
+        background="transparent"
+        speed="1"
+        style="width:240px;height:240px; margin-top:-60px;position:absolute;margin-left:-30px;"
+        loop
+        autoplay>
+    </lottie-player>
+            </div>
+
+            <div class="update-badge">
+
+                <span class="pulse"></span>
+
+                UPDATE AVAILABLE
+
+            </div>
+
+        </div>
+
+        <!-- Heading -->
+
+        <div class="update-title">
+
+            Neemo Just Got Better
+
+        </div>
+
+        <div class="update-subtitle">
+
+            Update your local repository to enjoy the latest features
+            
+
+        </div>
+
+        <!-- Version Comparison -->
+
+        <div class="version-section">
+
+            <div class="version-box">
+
+                <div class="version-caption">
+
+                    Installed
+
+                </div>
+
+                <div
+                    class="version-number"
+                    id="localVersion">
+
+                </div>
+
+            </div>
+
+            <div class="version-transfer">
+
+                <div class="transfer-line"></div>
+
+                <div class="transfer-arrow">
+
+                    ➜
+
+                </div>
+
+            </div>
+
+            <div class="version-box latest">
+
+                <div class="version-caption">
+
+                    Latest
+
+                </div>
+
+                <div
+                    class="version-number"
+                    id="serverVersion">
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Release Highlights -->
+
+        <div class="whats-new">
+
+            <div class="section-header">
+
+                <span class="section-icon">
+
+                    
+
+                </span>
+
+                <span>
+
+                   <i class="fa-solid fa-cloud-arrow-up" style="padding-right:8px;"></i> What's New
+
+                </span>
+
+            </div>
+
+            <div
+                id="releaseList"
+                class="release-grid">
+
+                <!-- Example item (remove this if you're generating dynamically) -->
+
+                <!--
+                <div class="release-item">
+
+                    <div class="release-icon">
+
+                        ⚡
+
+                    </div>
+
+                    <div class="release-text">
+
+                        Faster image processing
+
+                    </div>
+
+                </div>
+                -->
+
+            </div>
+
+        </div>
+
+        <!-- Footer -->
+        <div id="updateActionContainer" class="update-action-container">
+
+    <button
+       style="margin-top:30px;"
+        id="updateNowBtn"
+        class="close-update"
+        onclick="startUpdate()">
+
+        <i class="fa-brands fa-space-awesome" style="padding-right:5px;font-size:20px;"></i> Launch Update
+
+    </button>
+
+</div>
+    </div>
+
+</div>
+
+<!-- =========================================================
+     NEMO SETTINGS MODAL
+========================================================= -->
+
+<div
+    id="nemoSettingsModal"
+    class="nemo-settings-modal"
+    aria-hidden="true"
+>
+
+    <div class="nemo-settings-backdrop"></div>
+
+    <div
+        class="nemo-settings-dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="nemoSettingsTitle"
+    >
+
+        <!-- Header -->
+        <div class="nemo-settings-header">
+
+            <div class="nemo-settings-heading">
+
+                <div class="nemo-settings-title-icon">
+                    <i class="fa-solid fa-gear"></i>
+                </div>
+
+                <div>
+                    <h2 id="nemoSettingsTitle">
+                        Settings
+                    </h2>
+
+                    <span>
+                        Manage your Neemo experience
+                    </span>
+                </div>
+
+            </div>
+
+            <button
+                id="closeNemoSettingsBtn"
+                class="nemo-settings-close"
+                aria-label="Close settings"
+            >
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+        </div>
+
+
+        <!-- Navigation -->
+        <div class="nemo-settings-tabs">
+
+            <button
+                class="nemo-settings-tab active"
+                data-settings-tab="user"
+            >
+                <i class="fa-solid fa-circle-user"></i>
+                <span>User Info</span>
+            </button>
+
+            <button
+                class="nemo-settings-tab"
+                data-settings-tab="usage"
+            >
+                <i class="fa-solid fa-chart-pie"></i>
+                <span>Usage Statistics</span>
+            </button>
+
+            <button
+                class="nemo-settings-tab"
+                data-settings-tab="bug"
+            >
+                <i class="fa-solid fa-bug"></i>
+                <span>Raise a Bug</span>
+            </button>
+
+            
+
+        </div>
+
+
+        <!-- Content -->
+        <div class="nemo-settings-content">
+
+
+            <!-- =================================================
+                 USER INFO
+            ================================================== -->
+
+            <section
+                class="nemo-settings-panel active"
+                data-settings-panel="user"
+            >
+
+                <div class="nemo-user-avatar">
+
+    <img
+        id="nemoUserAvatar"
+        class="nemo-avatar-image"
+        alt="User avatar"
+    >
+
+</div>
+
+
+               <div
+    class="nemo-user-name"
+    id="nemoUserActualName"
+>
+    Loading...
+</div>
+
+                <div class="nemo-user-subtitle">
+                    Neemo Account
+                </div>
+
+
+                <div class="nemo-user-details">
+
+                    <div class="nemo-user-detail">
+
+                        <div class="nemo-detail-icon">
+                            <i class="fa-solid fa-fingerprint"></i>
+                        </div>
+
+                        <div class="nemo-detail-content">
+
+                            <span class="nemo-detail-label">
+                                Neemo User ID
+                            </span>
+
+                           <strong id="nemoUserId">
+    Loading...
+</strong>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="nemo-user-detail">
+
+                        <div class="nemo-detail-icon">
+                            <i class="fa-solid fa-user"></i>
+                        </div>
+
+                        <div class="nemo-detail-content">
+
+                            <span class="nemo-detail-label">
+                                Neemo Username
+                            </span>
+
+                            <strong id="nemoUserName">
+    Loading...
+</strong>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="nemo-user-detail">
+
+                        <div class="nemo-detail-icon">
+                            <i class="fa-solid fa-code-branch"></i>
+                        </div>
+
+                        <div class="nemo-detail-content">
+
+                            <span class="nemo-detail-label">
+                                Neemo Version
+                            </span>
+
+                          <strong id="nemoVersion">
+    --
+</strong>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 USAGE STATISTICS
+            ================================================== -->
+
+            <section
+                class="nemo-settings-panel"
+                data-settings-panel="usage"
+            >
+
+                <div class="nemo-usage-header">
+
+                    <h3>
+                        Today's Usage
+                    </h3>
+
+                    <span>
+                        Requests made today
+                    </span>
+
+                </div>
+
+
+                <div class="nemo-usage-circle">
+
+                    <div class="nemo-usage-circle-inner">
+
+                        <strong id="nemoDailyRequests">
+                            0
+                        </strong>
+
+                        <span>
+                            Requests
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="nemo-usage-description">
+
+                    Your daily Neemo request statistics
+                    will appear here.
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 RAISE A BUG
+            ================================================== -->
+
+            <section
+                class="nemo-settings-panel"
+                data-settings-panel="bug"
+            >
+
+                <div class="nemo-bug-header">
+
+                    <div class="nemo-bug-icon">
+                        <i class="fa-solid fa-bug"></i>
+                    </div>
+
+                    <div>
+
+                        <h3>
+                            Found a problem?
+                        </h3>
+
+                        <span>
+                            Help us make Neemo better
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <form id="nemoBugForm">
+
+                    <div class="nemo-form-group">
+
+                        <label for="nemoBugTitle">
+                            Bug Title
+                        </label>
+
+                        <input
+                            type="text"
+                            id="nemoBugTitle"
+                            name="title"
+                            placeholder="Briefly describe the issue"
+                            autocomplete="off"
+                        >
+
+                    </div>
+
+
+                    <div class="nemo-form-group">
+
+                        <label for="nemoBugDescription">
+                            Description
+                        </label>
+
+                        <textarea
+                            id="nemoBugDescription"
+                            name="description"
+                            rows="5"
+                            placeholder="Tell us what happened..."
+                        ></textarea>
+
+                    </div>
+
+
+                    <button
+                        type="submit"
+                        class="nemo-raise-bug-btn"
+                    >
+
+                        <i class="fa-solid fa-bug-slash"></i>
+
+                        Slash Bug
+
+                    </button>
+
+                </form>
+
+            </section>
+
+        </div>
 
     </div>
 

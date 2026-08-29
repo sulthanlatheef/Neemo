@@ -1,10 +1,28 @@
 <?php
 
+require_once __DIR__ . "/vendor/autoload.php";
+
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+
+$dotenv->load();
+
+if (empty($_ENV["NEMO_BAT_FILE"])) {
+
+    http_response_code(500);
+
+    echo json_encode([
+        "status" => "error",
+        "message" => "Environment file was not loaded or NEMO_BAT_FILE is missing."
+    ]);
+
+    exit;
+}
+
 error_reporting(E_ALL);
+
 ini_set('display_errors', 1);
 
 header("Content-Type: application/json");
-require_once __DIR__ . '/vendor/autoload.php';
 
 $action = $_GET['action'] ?? '';
 
@@ -127,7 +145,7 @@ if ($action === 'start_nemo') {
 
     try {
 
-        $batFile = "C:\\wamp64\\www\\Neemo\\start_nemo.bat";
+        $batFile = $_ENV["NEMO_BAT_FILE"];
 
         $process = popen(
             'cmd /c start "" "' . $batFile . '"',
@@ -240,6 +258,50 @@ echo postJsonRequest(
 
 exit;
 }
+
+
+if ($action === "update_nemo") {
+
+    $ch = curl_init();
+
+    curl_setopt_array($ch, [
+        CURLOPT_URL => "http://127.0.0.1:3001/update-client",
+        CURLOPT_POST => true,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_HEADER => false,
+        CURLOPT_TIMEOUT => 130
+    ]);
+
+    $response = curl_exec($ch);
+
+    $curlError = curl_error($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+    curl_close($ch);
+
+    // cURL itself failed
+    if ($response === false) {
+
+        http_response_code(500);
+
+        echo json_encode([
+            "status" => "error",
+            "message" => "Failed to contact update server.",
+            "curl_error" => $curlError
+        ]);
+
+        exit;
+    }
+
+    // Return Python's response regardless of HTTP status
+    http_response_code($httpCode ?: 500);
+
+    echo $response;
+
+    exit;
+}
+
+
 /*
 |--------------------------------------------------------------------------
 | INVALID ACTION

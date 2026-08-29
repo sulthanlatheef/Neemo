@@ -1,5 +1,16 @@
 
-    const expandLogsBtn =
+/*
+===========================================
+Nemo Client Version
+(Update this for every release)
+===========================================
+*/
+const NEMO_VERSION = "1.2.1 Beta";
+const CONTROL_SERVER =
+    "https://neemo-controller-server.onrender.com";
+   
+
+const expandLogsBtn =
     document.getElementById(
         "expandLogsBtn"
     );
@@ -3070,5 +3081,1173 @@ setInterval(
     600000
 
 );
+
+function showUpdateModal(latestVersion, features){
+    
+
+    document.getElementById("updateModal")
+        .style.display="flex";
+
+    document.getElementById("localVersion")
+        .textContent=NEMO_VERSION;
+
+    document.getElementById("serverVersion")
+        .textContent=latestVersion;
+
+    const list=
+        document.getElementById("releaseList");
+
+    list.innerHTML="";
+
+    features.forEach(feature=>{
+
+        list.innerHTML+=`
+
+            <div class="release-item">
+
+                <div class="release-icon">
+
+                    ✔
+
+                </div>
+
+                <div>
+
+                    ${feature}
+
+                </div>
+
+            </div>
+
+        `;
+
+    });
+
+}
+function closeUpdateModal(){
+
+    document.getElementById(
+        "updateModal"
+    ).style.display="none";
+
+}
+function updateProgress(percent, message) {
+
+    const fill =
+        document.getElementById("progressFill");
+
+    const status =
+        document.getElementById("progressStatus");
+
+    fill.style.width = percent + "%";
+
+    status.style.opacity = "0";
+
+    setTimeout(() => {
+
+        status.textContent = message;
+
+        status.style.opacity = "1";
+
+        if(message === "Connecting to Neemo Engine..."){
+
+            status.classList.add(
+                "connecting-status"
+            );
+
+        }
+        else{
+
+            status.classList.remove(
+                "connecting-status"
+            );
+
+        }
+
+    }, 150);
+
+}
+function updateSuccess() {
+
+    document
+        .getElementById("progressCard")
+        .classList
+        .add("progress-success");
+
+    document
+        .getElementById("progressTitle")
+        .innerHTML =
+        " Update Completed Successfully";
+
+    updateProgress(
+        100,
+        "Neemo has been updated successfully."
+    );
+
+    setTimeout(
+        startCountdown,
+        1000
+    );
+
+}
+function startCountdown(){
+
+    let count=3;
+
+    document
+        .getElementById("progressTitle")
+        .innerHTML=
+
+        "Refreshing Neemo";
+
+    const status=
+
+        document.getElementById(
+            "progressStatus"
+        );
+
+    status.textContent=
+
+        `Refreshing in ${count}`;
+
+    const timer=
+
+        setInterval(()=>{
+
+            count--;
+
+            if(count>0){
+
+                status.textContent=
+
+                    `Refreshing in ${count}`;
+
+            }
+
+            else{
+
+                clearInterval(timer);
+
+                window.location.reload();
+
+            }
+
+        },1000);
+
+}
+function updateError(message){
+
+    console.error(
+        "Neemo Update Error:",
+        message
+    );
+
+    document
+        .getElementById("progressCard")
+        .classList
+        .add("progress-error");
+
+    const title = document.getElementById("progressTitle");
+
+title.innerHTML =
+    '<i class="fa-solid fa-circle-exclamation blinking-icon" style="color:#ef4444"></i>Update Could Not Be Completed !';
+
+title.style.color = "#ef4444";
+
+title.style.fontWeight = "600";
+
+   const status = document.getElementById("progressStatus");
+
+status.style.color = "#ef4444";
+
+status.textContent = message;
+status.style.fontWeight = "600";
+    
+}
+function simulateCompletion(){
+
+    updateProgress(
+
+        45,
+
+        "Fetching latest changes..."
+
+    );
+
+    setTimeout(()=>{
+
+        updateProgress(
+
+            65,
+
+            "Pulling latest version..."
+
+        );
+
+    },900);
+
+    setTimeout(()=>{
+
+        updateProgress(
+
+            82,
+
+            "Applying updates..."
+
+        );
+
+    },1500);
+
+    setTimeout(()=>{
+
+        updateProgress(
+
+            95,
+
+            "Restarting Neemo Engine..."
+
+        );
+
+    },2100);
+
+    setTimeout(()=>{
+
+        updateSuccess();
+
+    },2800);
+
+}
+async function startUpdate() {
+
+    showProgressCard();
+
+    updateProgress(
+        15,
+        "Connecting to Neemo Engine..."
+    );
+
+    try {
+
+        const response = await fetch(
+
+            "api.php?action=update_nemo",
+
+            {
+                method: "POST"
+            }
+
+        );
+
+     
+
+        const result = await response.json();
+
+        if(result.status !== "success"){
+
+            updateError(
+                result.message
+            );
+
+            return;
+
+        }
+
+        /*
+        Nemo updated successfully.
+        Now show a beautiful
+        completion animation.
+        */
+
+        simulateCompletion();
+
+    }
+
+    catch(error){
+
+        updateError(
+            "Unable to connect with Neemo Engine."
+        );
+
+    }
+
+}
+
+
+function showProgressCard(){
+
+    document
+        .getElementById("updateActionContainer")
+        .innerHTML=`
+
+        <div
+            id="progressCard"
+            class="update-progress-card">
+
+            <div
+                id="progressTitle"
+                class="update-progress-title">
+
+              <i class="fa-solid fa-arrows-rotate"></i>  Updating Neemo
+
+            </div>
+
+            <div class="progress-bar">
+
+                <div
+                    id="progressFill"
+                    class="progress-fill">
+
+                </div>
+
+            </div>
+
+            <div
+                id="progressStatus"
+                style="margin-top:25px;"
+                class="update-progress-status">
+                
+
+                Preparing update...
+
+            </div>
+
+        </div>
+
+        `;
+
+}
+
+
+
+
+async function checkForUpdates(){
+
+    try{
+
+        const response=
+            await fetch(
+                `${CONTROL_SERVER}/version`
+            );
+
+        const result=
+            await response.json();
+
+        if(result.status!=="success")
+            return;
+
+        const latestVersion=
+            result.latest_version;
+
+        if(latestVersion===NEMO_VERSION)
+            return;
+
+        const updateResponse=
+            await fetch(
+                `${CONTROL_SERVER}/update/${latestVersion}`
+            );
+
+        const update=
+            await updateResponse.json();
+
+        if(update.status!=="success")
+            return;
+
+        showUpdateModal(
+            latestVersion,
+            update.data.features
+        );
+
+    }
+
+   catch(error){
+
+    console.log(
+        "Unable to check updates.",
+        error
+    );
+
+}
+
+}
+checkForUpdates();
+
+
+
+async function syncRequestCount() {
+    try {
+
+        const response = await fetch(
+            "http://127.0.0.1:3001/request-count"
+        );
+
+        if (!response.ok) {
+            return;
+        }
+
+        const data = await response.json();
+
+        const count = data.count;
+
+        // No new requests
+        if (count === 0) {
+            return;
+        }
+
+        // Send count to local Flask
+        await fetch(
+            "http://127.0.0.1:3001/sync-request-count",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    count: count
+                })
+            }
+        );
+
+    } catch (error) {
+        console.error(
+            "Failed to sync request count:",
+            error
+        );
+    }
+}
+syncRequestCount();
+setInterval(syncRequestCount, 60000);
+
+/* =========================================================
+   NEMO SETTINGS
+========================================================= */
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    const settingsBtn =
+        document.getElementById("nemoSettingsBtn");
+
+    const settingsModal =
+        document.getElementById("nemoSettingsModal");
+
+    const closeSettingsBtn =
+        document.getElementById("closeNemoSettingsBtn");
+
+    const settingsBackdrop =
+        document.querySelector(".nemo-settings-backdrop");
+
+    const settingsTabs =
+        document.querySelectorAll(".nemo-settings-tab");
+
+    const settingsPanels =
+        document.querySelectorAll(".nemo-settings-panel");
+
+
+
+    const bugForm =
+        document.getElementById("nemoBugForm");
+
+/* =====================================================
+   LOAD NEMO USER INFORMATION
+===================================================== */
+/* =====================================================
+   LOAD DAILY REQUEST COUNT
+===================================================== */
+
+async function loadNeemoDailyRequests() {
+
+    const requestsElement =
+        document.getElementById("nemoDailyRequests");
+
+
+    if (!requestsElement) {
+        return;
+    }
+
+
+    try {
+
+        /*
+         * Local Flask endpoint.
+         *
+         * Flask gets the user ID from .env
+         * and communicates with the global
+         * Neemo Controller Server.
+         */
+
+        const response = await fetch(
+            "http://127.0.0.1:3001/get-neemo-daily-request-count"
+        );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                `Request failed with status ${response.status}`
+            );
+
+        }
+
+
+        const result =
+            await response.json();
+
+
+        if (result.status !== "success") {
+
+            throw new Error(
+                result.message ||
+                "Failed to load daily request count."
+            );
+
+        }
+
+
+        const requests =
+            result.data?.requests ?? 0;
+
+
+        /*
+         * Update UI
+         */
+
+        requestsElement.textContent =
+            requests;
+
+
+    } catch (error) {
+
+        console.error(
+            "Failed to load daily request count:",
+            error
+        );
+
+
+        /*
+         * Keep a safe fallback
+         */
+
+        requestsElement.textContent =
+            "0";
+
+    }
+
+}
+
+async function loadNeemoUserInfo() {
+
+    const actualNameElement =
+        document.getElementById("nemoUserActualName");
+
+    const userIdElement =
+        document.getElementById("nemoUserId");
+
+    const userNameElement =
+        document.getElementById("nemoUserName");
+
+
+    try {
+
+        /*
+         * Local Flask endpoint.
+         *
+         * The user ID is NOT exposed here.
+         * Flask gets it from .env and communicates
+         * with the global Neemo Controller Server.
+         */
+
+        const response = await fetch(
+            "http://127.0.0.1:3001/get-neemo-user-info"
+        );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                `Request failed with status ${response.status}`
+            );
+
+        }
+
+
+        const result =
+            await response.json();
+
+
+        if (result.status !== "success") {
+
+            throw new Error(
+                result.message ||
+                "Failed to load Neemo user information."
+            );
+
+        }
+
+
+        const user =
+            result.data;
+
+
+        /*
+         * Update UI
+         */
+
+        if (actualNameElement) {
+
+            actualNameElement.textContent =
+                user.actual_name || "Unknown User";
+
+        }
+
+
+        if (userIdElement) {
+
+            userIdElement.textContent =
+                user.user_id || "Unknown";
+
+        }
+
+
+        if (userNameElement) {
+
+            userNameElement.textContent =
+                user.user_name || "Unknown";
+
+        }
+
+
+    } catch (error) {
+
+        console.error(
+            "Failed to load Neemo user information:",
+            error
+        );
+
+
+        /*
+         * Fallback UI
+         */
+
+        if (actualNameElement) {
+            actualNameElement.textContent =
+                "Unable to load";
+        }
+
+
+        if (userIdElement) {
+            userIdElement.textContent =
+                "Unable to load";
+        }
+
+
+        if (userNameElement) {
+            userNameElement.textContent =
+                "Unable to load";
+        }
+
+    }
+
+}
+/* =====================================================
+   RANDOM VOXEL AVATAR
+===================================================== */
+
+function loadRandomVoxelAvatar() {
+
+    const avatar =
+        document.getElementById("nemoUserAvatar");
+
+    if (!avatar) {
+        return;
+    }
+
+    const seed =
+        crypto.randomUUID();
+
+   avatar.src =
+    `https://api.dicebear.com/10.x/voxel-bot/svg?seed=${encodeURIComponent(seed)}&backgroundColor=%23FFFFFF00&animationVariant=medium&animationProbability=100`;
+
+}
+/* =====================================================
+   LOAD NEMO VERSION
+===================================================== */
+
+function loadNeemoVersion() {
+
+    const versionElement =
+        document.getElementById("nemoVersion");
+
+    if (!versionElement) {
+        return;
+    }
+
+    versionElement.textContent =
+        NEMO_VERSION;
+}
+/* =====================================================
+   LOAD NEMO VERSION ON FOOTER
+===================================================== */
+
+function loadNeemoVersion_footer() {
+
+    const versionElement =
+        document.getElementById("nemoVersion_footer");
+
+    if (!versionElement) {
+        return;
+    }
+
+    versionElement.textContent =
+        NEMO_VERSION;
+}
+
+/* =====================================================
+   OPEN MODAL
+===================================================== */
+
+function openNemoSettings() {
+
+    settingsModal.classList.add("active");
+
+    settingsModal.setAttribute(
+        "aria-hidden",
+        "false"
+    );
+
+    document.body.style.overflow = "hidden";
+
+    /*
+     * Always open on User Info
+     */
+    switchSettingsTab("user");
+    
+
+    /*
+     * Generate a fresh Voxel avatar
+     * every time User Info is opened.
+     */
+    loadRandomVoxelAvatar();
+    loadNeemoUserInfo();
+    loadNeemoDailyRequests();
+}
+
+
+    /* =====================================================
+       CLOSE MODAL
+    ===================================================== */
+
+    function closeNemoSettings() {
+
+        settingsModal.classList.remove("active");
+
+        settingsModal.setAttribute(
+            "aria-hidden",
+            "true"
+        );
+
+        document.body.style.overflow = "";
+    }
+
+
+    /* =====================================================
+       TAB SWITCHING
+    ===================================================== */
+
+    function switchSettingsTab(tabName) {
+
+        settingsTabs.forEach(tab => {
+
+            const isActive =
+                tab.dataset.settingsTab === tabName;
+
+            tab.classList.toggle(
+                "active",
+                isActive
+            );
+
+        });
+
+
+        settingsPanels.forEach(panel => {
+
+            const isActive =
+                panel.dataset.settingsPanel === tabName;
+
+            panel.classList.toggle(
+                "active",
+                isActive
+            );
+
+        });
+
+
+        /*
+         * Move sliding indicator
+         */
+
+       
+
+    }
+
+
+    /* =====================================================
+       SETTINGS BUTTON
+    ===================================================== */
+
+    if (settingsBtn) {
+
+        settingsBtn.addEventListener(
+            "click",
+            openNemoSettings
+        );
+
+    }
+
+
+    /* =====================================================
+       CLOSE BUTTON
+    ===================================================== */
+
+    if (closeSettingsBtn) {
+
+        closeSettingsBtn.addEventListener(
+            "click",
+            closeNemoSettings
+        );
+
+    }
+
+
+    /* =====================================================
+       BACKDROP CLICK
+    ===================================================== */
+
+    if (settingsBackdrop) {
+
+        settingsBackdrop.addEventListener(
+            "click",
+            closeNemoSettings
+        );
+
+    }
+
+
+    /* =====================================================
+       TAB EVENTS
+    ===================================================== */
+
+    settingsTabs.forEach(tab => {
+
+        tab.addEventListener(
+            "click",
+            () => {
+
+                const tabName =
+                    tab.dataset.settingsTab;
+
+                switchSettingsTab(tabName);
+
+            }
+        );
+
+    });
+
+
+    /* =====================================================
+       ESCAPE KEY
+    ===================================================== */
+
+    document.addEventListener(
+        "keydown",
+        event => {
+
+            if (
+                event.key === "Escape" &&
+                settingsModal.classList.contains("active")
+            ) {
+
+                closeNemoSettings();
+
+            }
+
+        }
+    );
+
+
+  /* =====================================================
+   BUG FORM
+===================================================== */
+
+if (bugForm) {
+
+    bugForm.addEventListener(
+        "submit",
+        async event => {
+
+            event.preventDefault();
+
+
+            const title =
+                document.getElementById(
+                    "nemoBugTitle"
+                ).value.trim();
+
+
+            const description =
+                document.getElementById(
+                    "nemoBugDescription"
+                ).value.trim();
+
+
+            const submitButton =
+                bugForm.querySelector(
+                    ".nemo-raise-bug-btn"
+                );
+
+
+            /* ---------------------------------------------
+               VALIDATE INPUT
+            --------------------------------------------- */
+
+           if (!title || !description) {
+
+    const titleField =
+        document.getElementById(
+            "nemoBugTitle"
+        );
+
+    const descriptionField =
+        document.getElementById(
+            "nemoBugDescription"
+        );
+
+    const originalTitlePlaceholder =
+        titleField.placeholder;
+
+    const originalDescriptionPlaceholder =
+        descriptionField.placeholder;
+
+
+    if (!title) {
+
+        titleField.placeholder =
+            "Please provide a title.";
+
+        titleField.classList.add(
+            "nemo-validation-error"
+        );
+
+    }
+
+
+    if (!description) {
+
+        descriptionField.placeholder =
+            "Please provide a description.";
+
+        descriptionField.classList.add(
+            "nemo-validation-error"
+        );
+
+    }
+
+
+    setTimeout(() => {
+
+        if (!title) {
+
+            titleField.placeholder =
+                originalTitlePlaceholder;
+
+            titleField.classList.remove(
+                "nemo-validation-error"
+            );
+
+        }
+
+
+        if (!description) {
+
+            descriptionField.placeholder =
+                originalDescriptionPlaceholder;
+
+            descriptionField.classList.remove(
+                "nemo-validation-error"
+            );
+
+        }
+
+    }, 3000);
+
+
+    return;
+
+}
+
+
+            /* ---------------------------------------------
+               PREVENT DUPLICATE SUBMISSIONS
+            --------------------------------------------- */
+
+            if (submitButton.disabled) {
+                return;
+            }
+
+
+            /* ---------------------------------------------
+               SAVE ORIGINAL BUTTON CONTENT
+            --------------------------------------------- */
+
+            const originalButtonContent =
+                submitButton.innerHTML;
+
+
+            /* ---------------------------------------------
+               SHOW SPINNER
+            --------------------------------------------- */
+
+            submitButton.disabled = true;
+
+            submitButton.innerHTML = `
+                <i class="fa-solid fa-spinner fa-spin"></i>
+                Submitting
+            `;
+
+
+            try {
+
+                /* -----------------------------------------
+                   SEND TO LOCAL FLASK
+                ----------------------------------------- */
+
+                const response = await fetch(
+                    "http://127.0.0.1:3001/raise-neemo-bug",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+
+                        body: JSON.stringify({
+                            title: title,
+                            description: description
+                        })
+                    }
+                );
+
+
+                /* -----------------------------------------
+                   CHECK HTTP RESPONSE
+                ----------------------------------------- */
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        `Request failed with status ${response.status}`
+                    );
+
+                }
+
+
+                const result =
+                    await response.json();
+
+
+                /* -----------------------------------------
+                   CHECK API RESPONSE
+                ----------------------------------------- */
+
+                if (result.status !== "success") {
+
+                    throw new Error(
+                        result.message ||
+                        "Failed to submit bug."
+                    );
+
+                }
+
+
+                /* -----------------------------------------
+                   SUCCESS
+                ----------------------------------------- */
+
+                submitButton.innerHTML = `
+                    <i class="fa-solid fa-check"></i>
+                    Success
+                `;
+
+
+                /*
+                 * Clear the form after successful submission.
+                 */
+
+                bugForm.reset();
+
+
+                /*
+                 * Keep Success visible briefly,
+                 * then restore the button.
+                 */
+
+                setTimeout(() => {
+
+                    submitButton.innerHTML =
+                        originalButtonContent;
+
+                    submitButton.disabled = false;
+
+                }, 1800);
+
+
+            } catch (error) {
+
+                console.error(
+                    "Failed to submit Neemo bug:",
+                    error
+                );
+
+
+                /* -----------------------------------------
+                   ERROR
+                ----------------------------------------- */
+
+                submitButton.innerHTML = `
+                    
+                    Error!
+                `;
+
+
+                /*
+                 * Restore button after showing Error.
+                 */
+
+                setTimeout(() => {
+
+                    submitButton.innerHTML =
+                        originalButtonContent;
+
+                    submitButton.disabled = false;
+
+                }, 1800);
+
+            }
+
+        }
+    );
+
+}
+
+
+    /* =====================================================
+       INITIAL STATE
+    ===================================================== */
+
+    switchSettingsTab("user");
+    loadNeemoVersion();
+    loadNeemoVersion_footer();
+
+});
+
+
 
 

@@ -1,0 +1,6 @@
+===== NEMO FIGMA START DEBUG ===== 
+Current Directory: C:\wamp64\www\Neemo 
+PYTHON_PATH before env:  
+PYTHON_PATH after env: C:\Users\sulthan.latheef\AppData\Local\Programs\Python\Python314\pythonw.exe 
+PATH: C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\dotnet\;C:\Program Files\Git\cmd;C:\Program Files\Docker\Docker\resources\bin;C:\WINDOWS\system32\config\systemprofile\AppData\Local\Microsoft\WindowsApps 
+================================= 

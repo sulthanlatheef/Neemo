@@ -1,5 +1,15 @@
 @echo off
 
+setlocal
+
 cd /d "%~dp0"
 
-"C:\Users\sulthan.latheef\AppData\Local\Programs\Python\Python314\pythonw.exe" dev_controller_server.py
+for /f "usebackq tokens=1,* delims==" %%A in (".env") do (
+    set "%%A=%%B"
+)
+
+echo PYTHON_PATH=%PYTHON_PATH%
+
+"%PYTHON_PATH%" dev_controller_server.py
+
+pause
