@@ -18,7 +18,10 @@
     >
 
     <title>Neemo — The Figma URL Eater</title>
-    <link rel="stylesheet" href="css/style.css">
+   <link
+    rel="stylesheet"
+    href="css/style.css?v=<?php echo filemtime('css/style.css'); ?>"
+>
     <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
 
     <style>
@@ -1392,6 +1395,6 @@
     </div>
 
 </div>
- <script src="js/script.js"></script>
+<script src="js/script.js?v=<?php echo filemtime('js/script.js'); ?>"></script>
 </body>
 </html>

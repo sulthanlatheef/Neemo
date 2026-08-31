@@ -8351,3 +8351,40 @@ font-family: "JetBrains Mono", monospace;
 .hidden {
     display: none !important;
 }
+
+/* =========================================================
+   support for swetha lap resolution
+   ========================================================= */
+
+@media (min-height:900px) and (max-height:920px){
+
+    .dashboard{
+        padding:20px;
+        gap:20px;
+    }
+
+    .sidebar{
+        gap:30px;
+    }
+
+    .logo-box{
+        padding:22px;
+    }
+
+    .panel{
+        padding:20px;
+    }
+
+    .performance-panel{
+        height:200px;
+    }
+
+    .topbar{
+        padding:25px;
+    }
+
+    .response-wrapper{
+        padding:20px;
+    }
+
+}

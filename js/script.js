@@ -5,7 +5,7 @@ Nemo Client Version
 (Update this for every release)
 ===========================================
 */
-const NEMO_VERSION = "1.0.5 Beta";
+const NEMO_VERSION = "1.0.6 Beta";
 const CONTROL_SERVER =
     "https://neemo-controller-server.onrender.com";
    
