@@ -5,7 +5,7 @@ Nemo Client Version
 (Update this for every release)
 ===========================================
 */
-const NEMO_VERSION = "1.2.1 Beta";
+const NEMO_VERSION = "1.0.5 Beta";
 const CONTROL_SERVER =
     "https://neemo-controller-server.onrender.com";
    
@@ -1387,6 +1387,22 @@ async function checkNemoStatus(){
         );
 
         if(res.ok){
+            const nemoEngineOverlay =
+    document.getElementById(
+        "nemoEngineOverlay"
+    );
+nemoEngineOverlay.classList.add("hidden");
+             const slider =
+        envToggle.nextElementSibling;
+
+    if(slider){
+
+        slider.style.setProperty(
+            "--toggle-ball-color",
+            "#ffffff"
+        );
+
+    }
 
             startNemoBtn.disabled = true;
 
@@ -1395,26 +1411,108 @@ async function checkNemoStatus(){
             startNemoBtn.style.cursor =
                 "not-allowed";
 
-            startNemoText.textContent =
-                "Neemo Running";
+             startNemoBtn.innerHTML = `
+                <i class="fas fa-play"></i>
+                Neemo Running
+            `;
+            /*
+    |--------------------------------------------------------------------------
+    | DISABLE DEPENDENT CONTROLS
+    |--------------------------------------------------------------------------
+    */
+   envToggle.disabled=false;
+
+    loadBtn.disabled = false;
+    loadBtn.style.opacity = "1";
+    loadBtn.style.cursor = "pointer";
+
+    generateBtn.disabled = false;
+    generateBtn.style.opacity = "1";
+    generateBtn.style.cursor = "pointer";
+
+   
 
         }else{
 
             throw new Error();
         }
 
-    }catch(error){
+    } catch(error){
 
-        startNemoBtn.disabled = false;
+    console.error("Neemo status check failed:", error);
 
-        startNemoBtn.style.opacity = "1";
+    nemoEngineOverlay.classList.remove(
+    "hidden"
+);
 
-        startNemoBtn.style.cursor =
-            "pointer";
+    /*
+    |--------------------------------------------------------------------------
+    | SWITCH BACK TO LOCAL
+    |--------------------------------------------------------------------------
+    */
 
-        startNemoText.textContent =
-            "Start Nemo";
+    environment = "local";
+
+    envToggle.checked = false;
+    envToggle.disabled = true;
+
+    localLabel.classList.add("active");
+    devLabel.classList.remove("active");
+
+    logsPanel.classList.remove("dev-mode");
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | SLIDER BALL → RED
+    |--------------------------------------------------------------------------
+    */
+
+    const slider =
+        envToggle.nextElementSibling;
+
+    if(slider){
+
+        slider.style.setProperty(
+            "--toggle-ball-color",
+            "#ef4444"
+        );
+
     }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | NEMO BUTTON
+    |--------------------------------------------------------------------------
+    */
+
+    startNemoBtn.disabled = false;
+
+    startNemoBtn.style.opacity = "1";
+
+    startNemoBtn.style.cursor = "pointer";
+
+    startNemoText.textContent =
+        "Start Nemo";
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | DISABLE DEPENDENT CONTROLS
+    |--------------------------------------------------------------------------
+    */
+
+    loadBtn.disabled = true;
+    loadBtn.style.opacity = "0.6";
+    loadBtn.style.cursor = "not-allowed";
+
+    generateBtn.disabled = true;
+    generateBtn.style.opacity = "0.6";
+    generateBtn.style.cursor = "not-allowed";
+
+   
+}
 }
 checkNemoStatus();
 
@@ -3426,7 +3524,7 @@ async function checkForUpdates(){
 
         const response=
             await fetch(
-                `${CONTROL_SERVER}/version`
+                `${CONTROL_SERVER}/version-figma`
             );
 
         const result=
@@ -3443,7 +3541,7 @@ async function checkForUpdates(){
 
         const updateResponse=
             await fetch(
-                `${CONTROL_SERVER}/update/${latestVersion}`
+                `${CONTROL_SERVER}/update-figma/${latestVersion}`
             );
 
         const update=

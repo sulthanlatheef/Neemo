@@ -5111,7 +5111,7 @@ false
     left: 3px;
     top: 2px;
     border-radius: 50%;
-    background: linear-gradient(180deg, #ffffff, #d8d8d8);
+    background:var(--toggle-ball-color, #fbfcfb);
     box-shadow:
         0 2px 6px rgba(0, 0, 0, 0.35),
         inset 0 1px 2px rgba(255, 255, 255, 0.8);
@@ -8193,4 +8193,161 @@ font-family: "JetBrains Mono", monospace;
     font-weight:600;
     font-family: "JetBrains Mono", monospace;
     opacity: 1;
+}
+.dev-panel {
+    position: relative;
+    overflow: hidden;
+}
+
+
+/* =========================================================
+   NEEMO ENGINE OFFLINE — DARK GLASS
+   ========================================================= */
+
+.engine-overlay {
+    position: absolute;
+    inset: 0;
+
+    z-index: 100;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: inherit;
+
+    /* Completely opaque — nothing underneath visible */
+    background: #030b17;
+
+    /*
+     * Glass finish without transparency.
+     * Keeps the surface feeling soft/frosted.
+     */
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+
+    /* Very subtle neon-blue glass edge */
+    border: 1px solid rgba(0, 174, 255, 0.16);
+
+    /* Inner blue glass illumination */
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.025),
+        inset 0 0 45px rgba(0, 140, 255, 0.035);
+}
+
+
+/* =========================================================
+   VERY SUBTLE BLUE GLASS LIGHT
+   ========================================================= */
+
+.engine-overlay::before {
+    content: "";
+
+    position: absolute;
+    inset: 0;
+
+    pointer-events: none;
+
+    border-radius: inherit;
+
+    background:
+        radial-gradient(
+            circle at 50% 50%,
+            rgba(0, 120, 220, 0.055),
+            transparent 65%
+        );
+}
+
+
+/* =========================================================
+   CONTENT
+   ========================================================= */
+
+.engine-overlay-content {
+    position: relative;
+    z-index: 2;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    text-align: center;
+
+    padding: 20px;
+}
+
+
+/* =========================================================
+   RED WARNING ICON
+   ========================================================= */
+
+.engine-overlay-content i {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 48px;
+    height: 48px;
+
+    margin-bottom: 12px;
+
+    font-size: 21px;
+
+    color: #ff5b65;
+
+    background: rgba(255, 59, 72, 0.07);
+
+    border: 1px solid rgba(255, 80, 90, 0.25);
+
+    border-radius: 50%;
+
+    box-shadow:
+        0 0 10px rgba(255, 50, 65, 0.10);
+
+    text-shadow:
+        0 0 7px rgba(255, 70, 80, 0.50);
+}
+
+
+/* =========================================================
+   MESSAGE
+   ========================================================= */
+
+.engine-overlay-content p {
+    margin: 0;
+
+    color: #e8f3ff;
+
+    font-size: 14px;
+    font-weight: 700;
+
+    letter-spacing: 0.15px;
+}
+
+
+/* =========================================================
+   BLUE GLASS ACCENT
+   ========================================================= */
+
+.engine-overlay-content::after {
+    content: "";
+
+    width: 28px;
+    height: 1px;
+
+    margin-top: 11px;
+
+    background: rgba(0, 174, 255, 0.50);
+
+    box-shadow:
+        0 0 7px rgba(0, 174, 255, 0.30);
+}
+
+
+/* =========================================================
+   HIDDEN
+   ========================================================= */
+
+.hidden {
+    display: none !important;
 }

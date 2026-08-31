@@ -203,9 +203,7 @@ def stop_server():
     server_running = False
     server_logs.clear()
 
-    server_logs.append(
-        "SERVER STOPPED NEEMO"
-    )
+   
 
     return jsonify({
         "status": "stopped"

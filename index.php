@@ -214,41 +214,47 @@
 
     <!-- CONTROL PANEL -->
 
-    <div class="panel glass">
+    <div class="panel glass dev-panel">
 
-        <div class="panel-title">
-           <p class= "performance-title"> Dev Controls<P>
+    <!-- OVERLAY -->
+    <div id="nemoEngineOverlay" class="engine-overlay hidden">
+        <div class="engine-overlay-content">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            <p>Start Neemo to enable LOC controls</p>
         </div>
+    </div>
 
-       <div class="dev-buttons">
+    <div class="panel-title">
+        <p class="performance-title">Dev Controls</p>
+    </div>
 
-    <button
-        id="startServerBtn"
-        class="dev-btn start-btn"
-    >
-        <i class="fa-solid fa-play"></i>
-        Start
-    </button>
+    <div class="dev-buttons">
+        <button
+            id="startServerBtn"
+            class="dev-btn start-btn"
+        >
+            <i class="fa-solid fa-play"></i>
+            Start
+        </button>
 
-    <button
-        id="stopServerBtn"
-        class="dev-btn stop-btn"
-    >
-        <i class="fa-solid fa-stop"></i>
-        Stop
-    </button>
+        <button
+            id="stopServerBtn"
+            class="dev-btn stop-btn"
+        >
+            <i class="fa-solid fa-stop"></i>
+            Stop
+        </button>
 
-    <button
-        id="restartServerBtn"
-        class="dev-btn restart-btn"
-    >
-        <i class="fa-solid fa-rotate-right"></i>
-        Restart
-    </button>
+        <button
+            id="restartServerBtn"
+            class="dev-btn restart-btn"
+        >
+            <i class="fa-solid fa-rotate-right"></i>
+            Restart
+        </button>
+    </div>
 
 </div>
-
-    </div>
 
 <!-- LIVE LOGS -->
 
