@@ -6,13 +6,13 @@ $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
 
 $dotenv->load();
 
-if (empty($_ENV["NEMO_BAT_FILE"])) {
+if (empty($_ENV["NEEMO_BAT_FILE"])) {
 
     http_response_code(500);
 
     echo json_encode([
         "status" => "error",
-        "message" => "Environment file was not loaded or NEMO_BAT_FILE is missing."
+        "message" => "Environment file was not loaded or NEEMO_BAT_FILE is missing."
     ]);
 
     exit;
@@ -145,7 +145,7 @@ if ($action === 'start_nemo') {
 
     try {
 
-        $batFile = $_ENV["NEMO_BAT_FILE"];
+        $batFile = $_ENV["NEEMO_BAT_FILE"];
 
         $process = popen(
             'cmd /c start "" "' . $batFile . '"',
@@ -269,15 +269,33 @@ if ($action === "update_nemo") {
         CURLOPT_POST => true,
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_HEADER => false,
-        CURLOPT_TIMEOUT => 130
+
+        // Maximum execution time: 2 minutes
+        CURLOPT_TIMEOUT => 120
     ]);
 
     $response = curl_exec($ch);
 
     $curlError = curl_error($ch);
+    $curlErrorNo = curl_errno($ch);
     $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
     curl_close($ch);
+
+
+    // ⏱ Timeout exceeded
+    if ($curlErrorNo === CURLE_OPERATION_TIMEDOUT) {
+
+        http_response_code(504);
+
+        echo json_encode([
+            "status" => "error",
+            "message" => "Update request timeout exceeded.Please retry!"
+        ]);
+
+        exit;
+    }
+
 
     // cURL itself failed
     if ($response === false) {
@@ -292,6 +310,7 @@ if ($action === "update_nemo") {
 
         exit;
     }
+
 
     // Return Python's response regardless of HTTP status
     http_response_code($httpCode ?: 500);

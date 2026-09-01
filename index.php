@@ -207,7 +207,7 @@
 
 </button>
 <div class="nemo-footer">
-    © 2026 <span>Neemo v1.0 Beta </span> • All Rights Reserved
+    © 2026 Neemo <span id="nemoVersion_footer"></span> • All Rights Reserved
 </div>
 
     </div>
@@ -228,7 +228,7 @@
     </div>
 
     <div class="panel-title">
-        <p class="performance-title">Dev Controls</p>
+        <p class="performance-title">LOC Controls</p>
     </div>
 
     <div class="dev-buttons">

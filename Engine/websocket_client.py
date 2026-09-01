@@ -2,7 +2,10 @@ import json
 import uuid
 import requests
 import websockets
-from config import PRODUCTION_WS_URL,LOCAL_WS_URL,MINT_SECRET,MINT_URL
+import os
+import sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__),"..")))
+from Config.config import PRODUCTION_WS_URL,LOCAL_WS_URL,MINT_SECRET,MINT_URL
 # ------------------------------------------------------------------
 # Configuration
 # ------------------------------------------------------------------

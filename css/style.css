@@ -8388,3 +8388,15 @@ font-family: "JetBrains Mono", monospace;
     }
 
 }
+
+#figmaUrl.error-placeholder::placeholder {
+    color: #f87171;
+    opacity: 1;
+    font-weight:600;
+    font-size:15.35px;
+}
+#selectedText.error-message {
+   color: #f87171;
+    opacity: 1;
+    font-weight:600;
+}

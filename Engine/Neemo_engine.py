@@ -8,7 +8,13 @@ import threading
 import logging
 import psutil
 import time
-from config import DOCKER_PROJECT_PATH,NEMO_PROJECT_PATH,USER_ID
+import sys
+sys.path.append(
+    os.path.abspath(
+        os.path.join(os.path.dirname(__file__), "..")
+    )
+)
+from Config.config import DOCKER_PROJECT_PATH,NEEMO_PROJECT_PATH,USER_ID
 
 from websocket_client import (
     submit_url,
@@ -391,6 +397,7 @@ def load_frames():
         return jsonify(result)
 
     except Exception as e:
+        print(e)
 
         return jsonify({
             "status": "error",
@@ -452,7 +459,7 @@ def generate_json():
 @app.route("/update-client", methods=["POST"])
 def update_client():
 
-    if not os.path.exists(NEMO_PROJECT_PATH):
+    if not os.path.exists(NEEMO_PROJECT_PATH):
 
         return jsonify({
 
@@ -473,12 +480,12 @@ def update_client():
             [
                 "git",
                 "-c",
-                f"safe.directory={NEMO_PROJECT_PATH}",
+                f"safe.directory={NEEMO_PROJECT_PATH}",
                 "fetch",
                 "origin"
             ],
 
-            cwd=NEMO_PROJECT_PATH,
+            cwd=NEEMO_PROJECT_PATH,
 
             capture_output=True,
 
@@ -497,13 +504,13 @@ def update_client():
             [
                 "git",
                 "-c",
-                f"safe.directory={NEMO_PROJECT_PATH}",
+                f"safe.directory={NEEMO_PROJECT_PATH}",
                 "pull",
                 "origin",
                 "main"
             ],
 
-            cwd=NEMO_PROJECT_PATH,
+            cwd=NEEMO_PROJECT_PATH,
 
             capture_output=True,
 

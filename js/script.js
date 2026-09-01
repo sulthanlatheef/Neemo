@@ -1536,7 +1536,7 @@ function updateLogWarningState() {
     const logCount =
         logContainer.children.length;
 
-    if (logCount > 2000) {
+    if (logCount > 5000) {
 
         logsPanel.classList.add(
             "log-warning"
@@ -2008,8 +2008,28 @@ setInterval(updateStartServerButton, 5000);
 
         if(!url){
 
-            alert("Please enter Figma URL");
+             
 
+        const originalPlaceholder =
+            figmaUrl.placeholder;
+
+        figmaUrl.placeholder =
+            "Please provide a Figma URL !";
+
+        figmaUrl.classList.add(
+            "error-placeholder"
+        );
+
+        setTimeout(()=>{
+
+            figmaUrl.placeholder =
+                originalPlaceholder;
+
+            figmaUrl.classList.remove(
+                "error-placeholder"
+            );
+
+        }, 3000);
             return;
         }
 
@@ -2122,10 +2142,29 @@ setInterval(updateStartServerButton, 5000);
 
         if(selectedIndex === null){
 
-            alert("Please select a frame");
+    const originalText =
+        selectedText.textContent;
 
-            return;
-        }
+    selectedText.textContent =
+        "Please select a frame !";
+
+    selectedText.classList.add(
+        "error-message"
+    );
+
+    setTimeout(()=>{
+
+        selectedText.textContent =
+            originalText;
+
+        selectedText.classList.remove(
+            "error-message"
+        );
+
+    }, 3000);
+
+    return;
+}
 
         const frame =
             frameList[selectedIndex];
@@ -2384,18 +2423,22 @@ startNemoBtn.addEventListener(
 
         try{
             
-
             // Store original button content
             const originalHTML = startNemoBtn.innerHTML;
+             startNemoBtn.disabled = true;
+            startNemoBtn.style.opacity = "0.6";
+            startNemoBtn.style.cursor="not-allowed";
+            
 
             // Show loading state
             startNemoBtn.innerHTML = `
                 <i class="fas fa-spinner fa-spin" style="font-size: 19.5px;"></i>
                 Starting Nemo...
             `;
+            
 
             // Optional: disable button while starting
-            startNemoBtn.disabled = true;
+           
 
             response = await fetch(
                 "api.php?action=start_nemo"
@@ -2410,12 +2453,8 @@ startNemoBtn.addEventListener(
 
                 checkNemoStatus();
 
-                // Restore button
-                 startNemoBtn.innerHTML = `
-                <i class="fas fa-play"></i>
-                Neemo Running
-            `;
-                startNemoBtn.disabled = false;
+             
+                
 
             }, 3000);
 
