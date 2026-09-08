@@ -192,15 +192,27 @@ function postJsonRequest($url, $payload)
     $response = curl_exec($ch);
 
     if (curl_errno($ch)) {
-        throw new Exception(curl_error($ch));
+
+        $error = curl_error($ch);
+
+        curl_close($ch);
+
+        throw new Exception($error);
     }
 
-    $status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $status = curl_getinfo(
+        $ch,
+        CURLINFO_HTTP_CODE
+    );
 
     curl_close($ch);
 
+    // Return Flask's response even when Flask returns 400/500
     if ($status >= 400) {
-        throw new Exception($response);
+
+        http_response_code($status);
+
+        return $response;
     }
 
     return $response;

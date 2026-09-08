@@ -2002,13 +2002,11 @@ updateStartServerButton();
 // Check every 500 ms
 setInterval(updateStartServerButton, 5000);
 
-    loadBtn.addEventListener("click", async ()=>{
+   loadBtn.addEventListener("click", async () => {
 
-        const url = figmaUrl.value.trim();
+    const url = figmaUrl.value.trim();
 
-        if(!url){
-
-             
+    if (!url) {
 
         const originalPlaceholder =
             figmaUrl.placeholder;
@@ -2020,7 +2018,7 @@ setInterval(updateStartServerButton, 5000);
             "error-placeholder"
         );
 
-        setTimeout(()=>{
+        setTimeout(() => {
 
             figmaUrl.placeholder =
                 originalPlaceholder;
@@ -2030,107 +2028,205 @@ setInterval(updateStartServerButton, 5000);
             );
 
         }, 3000);
+
+        return;
+    }
+
+    setLoading(
+        '<p style="margin-top:-43px">Loading Frames...</p>'
+    );
+
+    try {
+
+        const res = await fetch(
+            "api.php?action=load_frames",
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+                    figma_url: url
+                })
+            }
+        );
+
+        const data = await res.json();
+
+        stopResponseTimer();
+
+        // Flask returned an error
+        if (!res.ok || data.status === "error") {
+
+            console.error(
+                "Flask Error:",
+                data.message || "Unknown error"
+            );
+
+            showFrameError(
+                data.message || "Unknown error"
+            );
+
             return;
         }
 
-        setLoading(
-    '<p style="margin-top:-43px">Loading Frames...</p>'
-);
+        // Normal successful response
+        responseBox.textContent =
+            JSON.stringify(data, null, 2);
 
-        try{
+        currentFileKey =
+            data.filekey || "";
 
-            const res = await fetch(
-                "api.php?action=load_frames",
-                {
-                    method:"POST",
+        frameList =
+            data.frame_list || [];
 
-                    headers:{
-                        "Content-Type":"application/json"
-                    },
+        selectedIndex = null;
 
-                    body:JSON.stringify({
-                        figma_url:url
-                    })
-                }
-            );
+        fileKeyEl.textContent =
+            currentFileKey || "—";
 
-            const data = await res.json();
-            stopResponseTimer();
+        framesLoadedEl.textContent =
+            frameList.length;
 
-            responseBox.textContent =
-                JSON.stringify(data,null,2);
+        selectedFrameEl.textContent =
+            "—";
 
-            currentFileKey =
-                data.filekey || "";
+        selectedText.textContent =
+            "-- Select Frame --";
 
-            frameList =
-                data.frame_list || [];
+        dropdown.innerHTML = "";
 
-            selectedIndex = null;
+        frameList.forEach((frame, index) => {
 
-            fileKeyEl.textContent =
-                currentFileKey || "—";
+            const item =
+                document.createElement("div");
 
-            framesLoadedEl.textContent =
-                frameList.length;
+            item.className =
+                "dropdown-item";
 
-            selectedFrameEl.textContent =
-                "—";
+            item.innerHTML = `
+                <div class="frame-name">
+                    ${frame.name}
+                </div>
 
-            selectedText.textContent =
-                "-- Select Frame --";
+                <div class="frame-id">
+                    ${frame.id}
+                </div>
+            `;
 
-            dropdown.innerHTML = "";
+            item.addEventListener("click", () => {
 
-            frameList.forEach((frame,index)=>{
+                selectedIndex = index;
 
-                const item =
-                    document.createElement("div");
+                selectedText.textContent =
+                    frame.name;
 
-                item.className =
-                    "dropdown-item";
+                selectedFrameEl.textContent =
+                    frame.name;
 
-                item.innerHTML = `
-                    <div class="frame-name">
-                        ${frame.name}
-                    </div>
-
-                    <div class="frame-id">
-                        ${frame.id}
-                    </div>
-                `;
-
-                item.addEventListener("click", ()=>{
-
-                    selectedIndex = index;
-
-                    selectedText.textContent =
-                        frame.name;
-
-                    selectedFrameEl.textContent =
-                        frame.name;
-
-                    dropdown.classList.remove(
-                        "active"
-                    );
-
-                });
-
-                dropdown.appendChild(item);
-
+                dropdown.classList.remove(
+                    "active"
+                );
             });
 
-        }catch(error){
-            stopResponseTimer();
+            dropdown.appendChild(item);
 
-            responseBox.textContent =
-                "Error loading frames";
+        });
 
-            console.error(error);
+    } catch (error) {
+
+        stopResponseTimer();
+
+        console.error(
+            "Request Error:",
+            error
+        );
+
+        showFrameError(
+            error.message ||
+            "Unable to connect to server"
+        );
+    }
+
+});
+
+
+/*
+ * Show frame loading error
+ */
+function showFrameError(message) {
+
+    responseBox.innerHTML = `
+
+        <div class="response-error">
+
+            <lottie-player
+                src="https://lottie.host/6cbcaee9-9e58-47b4-a601-96867f564bd7/xrbNgMIBMM.json"
+                background="transparent"
+                speed="1"
+                
+                autoplay>
+            </lottie-player>
+
+            <div class="response-error-message">
+
+                ERROR LOADING FARMES
+
+                <i
+                    class="fa-solid fa-circle-info error-info-icon"
+                    title="Show error details">
+                </i>
+
+            </div>
+
+        </div>
+    `;
+
+
+    /*
+     * Info icon
+     */
+    const errorInfoIcon =
+        responseBox.querySelector(
+            ".error-info-icon"
+        );
+
+
+    errorInfoIcon.addEventListener(
+        "click",
+        () => {
+
+            /*
+             * Clear the response panel
+             * and show the actual error
+             */
+            responseBox.innerHTML = `
+                <div class="actual-error-message">
+                    ${escapeHtml(message)}
+                </div>
+            `;
 
         }
+    );
+}
 
-    });
+
+/*
+ * Prevent error messages containing HTML
+ * from being interpreted as HTML
+ */
+function escapeHtml(text) {
+
+    const div =
+        document.createElement("div");
+
+    div.textContent =
+        String(text);
+
+    return div.innerHTML;
+}
 
     /*
     |--------------------------------------------------------------------------

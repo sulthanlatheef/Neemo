@@ -401,7 +401,7 @@ def load_frames():
 
         return jsonify({
             "status": "error",
-            "message": str(e)
+            "message": str(e).strip()
         }), 500
 
 

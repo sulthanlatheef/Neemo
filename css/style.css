@@ -8400,3 +8400,103 @@ font-family: "JetBrains Mono", monospace;
     opacity: 1;
     font-weight:600;
 }
+
+.response-error {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+
+/* Lottie error animation */
+.response-error lottie-player {
+    position: absolute;
+
+    width: 400px;
+    height: 400px;
+
+    left: 50%;
+    top: 18px;
+
+    transform:
+        translate(-50%, -50%);
+}
+
+
+/* Error loading frames text */
+.response-error-message {
+    position: absolute;
+    margin-top:-34px;
+font-family:"JetBrains Mono", monospace;
+    left: 530px;
+    top: calc(50% + 65px);
+
+    transform:
+        translateX(-50%);
+
+    color: #E85233;
+
+    font-size: 19.5px;
+    font-weight: 900;
+
+    white-space: nowrap;
+
+    display: flex;
+    align-items: center;
+}
+
+
+/* Info icon */
+.error-info-icon {
+    margin-left: 8px;
+
+    font-size: 18.5px;
+
+    color: #E85233;
+
+    cursor: pointer;
+
+    transition:
+        color 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+/* Info icon hover */
+.error-info-icon:hover {
+    color: #ffffff;
+
+    transform:
+        scale(1.12);
+}
+
+
+/* Actual error message */
+.actual-error-message {
+    width: 100%;
+    height: 100%;
+
+    box-sizing: border-box;
+
+    padding: 30px 35px;
+
+    display: flex;
+    align-items: top;
+    
+
+    color: #ff6b6b;
+
+    font-size: 14px;
+    font-weight: 800;
+
+    line-height: 1.6;
+
+    text-align: left;
+
+    white-space: normal;
+
+    overflow-wrap: anywhere;
+    word-break: break-word;
+
+    overflow-y: auto;
+}
