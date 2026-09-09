@@ -14,7 +14,7 @@ sys.path.append(
         os.path.join(os.path.dirname(__file__), "..")
     )
 )
-from Config.config import DOCKER_PROJECT_PATH,NEEMO_PROJECT_PATH,USER_ID
+from Config.config import DOCKER_PROJECT_PATH,NEEMO_PROJECT_PATH,USER_ID,FIGMA_TOKEN
 
 from websocket_client import (
     submit_url,
@@ -46,6 +46,8 @@ environment = "local"
 
 PROJECT_PATH = DOCKER_PROJECT_PATH
 CONTROL_SERVER = "https://neemo-controller-server.onrender.com"
+FIGMA_API_URL = "https://api.figma.com/v1/files"
+FIGMA_TOKEN = FIGMA_TOKEN
 
 # ------------------------------------------------------------------
 # GLOBAL STATE
@@ -873,6 +875,76 @@ def raise_neemo_bug():
             "status": "error",
             "message": str(e)
         }), 500
+        
+@app.route("/")
+def home():
+    return jsonify({
+        "status": "Flask running successfully 🚀"
+    })
+
+
+@app.route("/figma/file", methods=["POST"])
+def fetch_figma_file():
+
+    data = request.get_json(silent=True) or {}
+
+    file_key = str(
+        data.get("file_key", "")
+    ).strip()
+
+    if not file_key:
+
+        return jsonify({
+            "status": "error",
+            "message": "Figma file key is required."
+        }), 400
+
+    headers = {
+        "X-Figma-Token": FIGMA_TOKEN
+    }
+
+    params = {
+        "geometry": "paths"
+    }
+
+    figma_url = (
+        f"https://api.figma.com/v1/files/{file_key}"
+    )
+
+    try:
+
+        response = requests.get(
+            figma_url,
+            headers=headers,
+            params=params,
+            timeout=120
+        )
+
+    except requests.RequestException as e:
+
+        return jsonify({
+            "status": "error",
+            "message": str(e)
+        }), 502
+
+
+    if response.status_code != 200:
+
+        try:
+            error_detail = response.json()
+        except ValueError:
+            error_detail = response.text
+
+        return jsonify({
+            "status": "error",
+            "message": "Figma API request failed.",
+            "figma_error": error_detail
+        }), response.status_code
+
+
+    return jsonify(
+        response.json()
+    ), 200
 # ------------------------------------------------------------------
 # MAIN
 # ------------------------------------------------------------------

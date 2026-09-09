@@ -14,7 +14,8 @@ const expandLogsBtn =
     document.getElementById(
         "expandLogsBtn"
     );
-
+const refreshLogsBtn =
+    document.getElementById("refreshLogsBtn");
 const logsModal =
     document.getElementById(
         "logsModal"
@@ -613,7 +614,8 @@ let currentMatchIndex = -1;
 
 let currentSearchText = "";
 let normalSearchMatches = [];
-
+let fullResponseText = "";
+const RESPONSE_PREVIEW_LINES = 100;
 let normalMatchIndex = -1;
 
 const BUFFER_LINES = 0;
@@ -1176,10 +1178,10 @@ normalMatchIndex = -1;
 
     try{
 
-        const json =
-            JSON.parse(
-                responseBox.textContent
-            );
+       const json =
+    JSON.parse(
+        fullResponseText
+    );
 
        const jsonText =
     JSON.stringify(
@@ -1206,10 +1208,6 @@ if(lineCount > 5000){
         jsonText
     );
 
-    openVirtualViewer(
-        jsonText
-    );
-
 }else{
 
 renderNormalRows();
@@ -1217,8 +1215,8 @@ renderNormalRows();
 
     }catch{
 
-        modalResponseContainer.textContent =
-            responseBox.textContent;
+       modalResponseContainer.textContent =
+    fullResponseText;
     }
 
     responseModal.classList.add(
@@ -1313,21 +1311,114 @@ function applyDebugHighlight(){
         }
     }
 }
+function refreshLogsModal() {
+
+    modalLogContainer.replaceChildren();
+
+    const normalLogs =
+        Array.from(logContainer.children);
+
+    normalLogs.forEach((sourceLine) => {
+
+        const modalLine =
+            sourceLine.cloneNode(true);
+
+        /*
+        |--------------------------------------------------------------------------
+        | SEARCH FILTER
+        |--------------------------------------------------------------------------
+        */
+
+        if(
+            logSearchInput.value &&
+            !modalLine.textContent
+                .toLowerCase()
+                .includes(
+                    logSearchInput.value.toLowerCase()
+                )
+        ){
+
+            modalLine.style.display = "none";
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | DEBUG HIGHLIGHT
+        |--------------------------------------------------------------------------
+        */
+
+        if(
+            debugFilterEnabled &&
+            modalLine.textContent
+                .toLowerCase()
+                .includes("neemo")
+        ){
+
+            modalLine.classList.add(
+                "debug-highlight"
+            );
+        }
+
+
+        modalLogContainer.appendChild(
+            modalLine
+        );
+
+    });
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | STICK TO BOTTOM
+    |--------------------------------------------------------------------------
+    */
+
+    if(stickToBottom){
+
+        modalLogContainer.scrollTop =
+            modalLogContainer.scrollHeight;
+
+    }
+}
 function openLogsModal(){
 
-    modalLogContainer.innerHTML =
-        logContainer.innerHTML;
+    refreshLogsModal();
 
+    filterLogs();
     applyDebugHighlight();
 
-    logsModal.classList.add(
+    logsModal.classList.add("active");
+
+    if(stickToBottom){
+
+        modalLogContainer.scrollTop =
+            modalLogContainer.scrollHeight;
+
+    }
+}
+
+function closeLogsViewer(){
+
+    /*
+    |--------------------------------------------------------------------------
+    | CLOSE MODAL
+    |--------------------------------------------------------------------------
+    */
+
+    logsModal.classList.remove(
         "active"
     );
-}
-function closeLogsViewer(){
-    
 
-    logsModal.classList.remove("active");
+
+    /*
+    |--------------------------------------------------------------------------
+    | DESTROY MODAL LOG DOM
+    |--------------------------------------------------------------------------
+    */
+
+    modalLogContainer.replaceChildren();
+
 }
 
 
@@ -1560,10 +1651,40 @@ function updateLogWarningState() {
 
 let lastLogCount = 0;
 
+/*
+|--------------------------------------------------------------------------
+| LOG DOM MEMORY LIMIT
+|--------------------------------------------------------------------------
+| Keep the normal log container between ~100 and 200 logs.
+| When it exceeds 200, remove the oldest 100.
+|--------------------------------------------------------------------------
+*/
+
+const MAX_LOG_DOM = 200;
+const TRIM_LOG_DOM = 100;
+
 async function fetchLogs(){
-    
 
     try{
+
+        /*
+        |--------------------------------------------------------------------------
+        | PREVENT OVERLAPPING REQUESTS
+        |--------------------------------------------------------------------------
+        */
+
+        if(fetchLogs.running){
+            return;
+        }
+
+        fetchLogs.running = true;
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | FETCH LOGS
+        |--------------------------------------------------------------------------
+        */
 
         const res = await fetch(
             "http://127.0.0.1:3001/logs"
@@ -1573,204 +1694,277 @@ async function fetchLogs(){
 
         const logs = data.logs || [];
 
+
         /*
         |--------------------------------------------------------------------------
-        | APPEND ONLY NEW LOGS
+        | SERVER LOG RESET DETECTION
         |--------------------------------------------------------------------------
         */
-         
-        if(logs.length > lastLogCount){
 
-            /*
-            |--------------------------------------------------------------------------
-            | REMOVE WAITING MESSAGE
-            |--------------------------------------------------------------------------
-            */
+        if(logs.length < lastLogCount){
 
-            if(
-                logContainer.innerHTML.includes(
-                    "Waiting for logs"
-                )
-            ){
+            lastLogCount = 0;
 
-                logContainer.innerHTML = "";
-            }
+            //logContainer.replaceChildren();
 
-            /*
-            |--------------------------------------------------------------------------
-            | ADD NEW LOGS
-            |--------------------------------------------------------------------------
-            */
+            // if(logsModal.classList.contains("active")){
 
-            for(
-                let i = lastLogCount;
-                i < logs.length;
-                i++
-            ){
+                // modalLogContainer.replaceChildren();
 
-                const line =
-                    document.createElement("div");
+            // }
 
-                line.textContent =
-                    logs[i];
-
-                /*
-                |--------------------------------------------------------------------------
-                | LOG CARD STYLE
-                |--------------------------------------------------------------------------
-                */
-
-                line.style.marginBottom =
-                    "10px";
-
-                line.style.padding =
-                    "10px 14px";
-
-                line.style.borderRadius =
-                    "14px";
-
-                line.style.fontWeight =
-                    "500";
-
-                line.style.wordBreak =
-                    "break-word";
-
-                line.style.transition =
-                    "0.25s";
-
-                line.style.border =
-                    "1px solid rgba(255,255,255,0.05)";
-
-                line.style.backdropFilter =
-                    "blur(12px)";
-
-                /*
-                |--------------------------------------------------------------------------
-                | ALTERNATING COLORS
-                |--------------------------------------------------------------------------
-                */
-
-                if(i % 2 === 0){
-
-                    /*
-                    |--------------------------------------------------------------------------
-                    | GREEN LOG
-                    |--------------------------------------------------------------------------
-                    */
-
-                    line.style.color =
-                        "#00ff88";
-
-                    line.style.background =
-                        "rgba(0,255,136,0.07)";
-
-                    line.style.boxShadow =
-                        "0 0 18px rgba(0,255,136,0.08)";
-
-                }else{
-
-                    /*
-                    |--------------------------------------------------------------------------
-                    | BLUE LOG
-                    |--------------------------------------------------------------------------
-                    */
-
-                    line.style.color =
-                        "#38bdf8";
-
-                    line.style.background =
-                        "rgba(56,189,248,0.07)";
-
-                    line.style.boxShadow =
-                        "0 0 18px rgba(56,189,248,0.08)";
-                }
-
-                /*
-                |--------------------------------------------------------------------------
-                | HOVER EFFECT
-                |--------------------------------------------------------------------------
-                */
-
-                line.addEventListener(
-                    "mouseenter",
-                    ()=>{
-
-                        line.style.transform =
-                            "translateX(4px)";
-                    }
-                );
-
-                line.addEventListener(
-                    "mouseleave",
-                    ()=>{
-
-                        line.style.transform =
-                            "translateX(0px)";
-                    }
-                );
-
-                /*
-                |--------------------------------------------------------------------------
-                | APPEND
-                |--------------------------------------------------------------------------
-                */
-
-                logContainer.appendChild(line);
-                updateLogWarningState();
-                const modalLine =
-    line.cloneNode(true);
-
-modalLogContainer.appendChild(
-    modalLine
-);
-if(
-    logSearchInput.value &&
-    !modalLine.textContent
-        .toLowerCase()
-        .includes(
-            logSearchInput.value
-            .toLowerCase()
-        )
-){
-
-    modalLine.style.display = "none";
-}
-if(stickToBottom){
-
-    modalLogContainer.scrollTop =
-        modalLogContainer.scrollHeight;
-}
-if(
-    debugFilterEnabled &&
-    modalLine.textContent
-        .toLowerCase()
-        .includes("neemo")
-){
-
-    modalLine.classList.add(
-        "debug-highlight"
-    );
-}
-                
-            }
-
-            /*
-            |--------------------------------------------------------------------------
-            | UPDATE COUNT
-            |--------------------------------------------------------------------------
-            */
-
-            lastLogCount = logs.length;
-
-            /*
-            |--------------------------------------------------------------------------
-            | AUTO SCROLL
-            |--------------------------------------------------------------------------
-            */
-
-            logContainer.scrollTop =
-                logContainer.scrollHeight;
         }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | NO NEW LOGS
+        |--------------------------------------------------------------------------
+        */
+
+        if(logs.length === lastLogCount){
+
+            return;
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | REMOVE WAITING MESSAGE
+        |--------------------------------------------------------------------------
+        */
+
+        const waitingMessage =
+            logContainer.querySelector(".waiting-log");
+
+        if(waitingMessage){
+
+            waitingMessage.remove();
+
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | CALCULATE WHAT SHOULD ACTUALLY BE RENDERED
+        |--------------------------------------------------------------------------
+        |
+        | We never render more than the newest MAX_LOG_DOM logs.
+        |
+        */
+
+        const startIndex =
+            Math.max(
+                lastLogCount,
+                logs.length - MAX_LOG_DOM
+            );
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | ADD ONLY NECESSARY LOGS
+        |--------------------------------------------------------------------------
+        */
+
+        for(
+            let i = startIndex;
+            i < logs.length;
+            i++
+        ){
+
+            const line =
+                document.createElement("div");
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | LOG TEXT
+            |--------------------------------------------------------------------------
+            */
+
+            line.textContent =
+                logs[i];
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | LOG CARD STYLE
+            |--------------------------------------------------------------------------
+            */
+
+            line.style.marginBottom =
+                "10px";
+
+            line.style.padding =
+                "10px 14px";
+
+            line.style.borderRadius =
+                "14px";
+
+            line.style.fontWeight =
+                "500";
+
+            line.style.wordBreak =
+                "break-word";
+
+            line.style.transition =
+                "0.25s";
+
+            line.style.border =
+                "1px solid rgba(255,255,255,0.05)";
+
+            line.style.backdropFilter =
+                "blur(12px)";
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | ALTERNATING COLORS
+            |--------------------------------------------------------------------------
+            */
+
+            if(i % 2 === 0){
+
+                line.style.color =
+                    "#00ff88";
+
+                line.style.background =
+                    "rgba(0,255,136,0.07)";
+
+                line.style.boxShadow =
+                    "0 0 18px rgba(0,255,136,0.08)";
+
+            }else{
+
+                line.style.color =
+                    "#38bdf8";
+
+                line.style.background =
+                    "rgba(56,189,248,0.07)";
+
+                line.style.boxShadow =
+                    "0 0 18px rgba(56,189,248,0.08)";
+            }
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | HOVER EFFECT
+            |--------------------------------------------------------------------------
+            */
+
+            line.addEventListener(
+                "mouseenter",
+                ()=>{
+
+                    line.style.transform =
+                        "translateX(4px)";
+                }
+            );
+
+            line.addEventListener(
+                "mouseleave",
+                ()=>{
+
+                    line.style.transform =
+                        "translateX(0px)";
+                }
+            );
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | APPEND TO NORMAL LOG CONTAINER
+            |--------------------------------------------------------------------------
+            */
+
+            logContainer.appendChild(line);
+
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | TRIM NORMAL LOG DOM
+        |--------------------------------------------------------------------------
+        |
+        | Example:
+        |
+        | 200 logs
+        |     ↓
+        | new log
+        |     ↓
+        | 201 logs
+        |     ↓
+        | remove oldest 100
+        |     ↓
+        | 101 logs
+        |
+        |--------------------------------------------------------------------------
+        */
+if(
+    logContainer.children.length >
+    MAX_LOG_DOM
+){
+
+    for(
+        let i = 0;
+        i < TRIM_LOG_DOM;
+        i++
+    ){
+
+        if(logContainer.firstElementChild){
+
+            logContainer.removeChild(
+                logContainer.firstElementChild
+            );
+
+        }
+
+    }
+
+}
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | UPDATE TOTAL SERVER LOG COUNT
+        |--------------------------------------------------------------------------
+        */
+
+        lastLogCount =
+            logs.length;
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | UPDATE WARNING STATE
+        |--------------------------------------------------------------------------
+        */
+
+        updateLogWarningState();
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | AUTO SCROLL NORMAL LOG CONTAINER
+        |--------------------------------------------------------------------------
+        */
+
+        logContainer.scrollTop =
+            logContainer.scrollHeight;
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | MODAL IS ONLY UPDATED WHEN IT IS ACTUALLY OPEN
+        |--------------------------------------------------------------------------
+        |
+        | We do NOT keep hidden modal logs alive anymore.
+        |
+        */
+
+       
 
     }catch(error){
 
@@ -1778,6 +1972,11 @@ if(
             "Log fetch error:",
             error
         );
+
+    }finally{
+
+        fetchLogs.running = false;
+
     }
 }
 
@@ -1821,6 +2020,12 @@ setInterval(
 }
 let responseTimerInterval;
 let responseStartTime;
+
+
+refreshLogsBtn.addEventListener(
+    "click",
+    refreshLogsModal
+);
 
 function startResponseTimer(){
 
@@ -2002,215 +2207,7 @@ updateStartServerButton();
 // Check every 500 ms
 setInterval(updateStartServerButton, 5000);
 
-   loadBtn.addEventListener("click", async () => {
 
-    const url = figmaUrl.value.trim();
-
-    if (!url) {
-
-        const originalPlaceholder =
-            figmaUrl.placeholder;
-
-        figmaUrl.placeholder =
-            "Please provide a Figma URL !";
-
-        figmaUrl.classList.add(
-            "error-placeholder"
-        );
-
-        setTimeout(() => {
-
-            figmaUrl.placeholder =
-                originalPlaceholder;
-
-            figmaUrl.classList.remove(
-                "error-placeholder"
-            );
-
-        }, 3000);
-
-        return;
-    }
-
-    setLoading(
-        '<p style="margin-top:-43px">Loading Frames...</p>'
-    );
-
-    try {
-
-        const res = await fetch(
-            "api.php?action=load_frames",
-            {
-                method: "POST",
-
-                headers: {
-                    "Content-Type": "application/json"
-                },
-
-                body: JSON.stringify({
-                    figma_url: url
-                })
-            }
-        );
-
-        const data = await res.json();
-
-        stopResponseTimer();
-
-        // Flask returned an error
-        if (!res.ok || data.status === "error") {
-
-            console.error(
-                "Flask Error:",
-                data.message || "Unknown error"
-            );
-
-            showFrameError(
-                data.message || "Unknown error"
-            );
-
-            return;
-        }
-
-        // Normal successful response
-        responseBox.textContent =
-            JSON.stringify(data, null, 2);
-
-        currentFileKey =
-            data.filekey || "";
-
-        frameList =
-            data.frame_list || [];
-
-        selectedIndex = null;
-
-        fileKeyEl.textContent =
-            currentFileKey || "—";
-
-        framesLoadedEl.textContent =
-            frameList.length;
-
-        selectedFrameEl.textContent =
-            "—";
-
-        selectedText.textContent =
-            "-- Select Frame --";
-
-        dropdown.innerHTML = "";
-
-        frameList.forEach((frame, index) => {
-
-            const item =
-                document.createElement("div");
-
-            item.className =
-                "dropdown-item";
-
-            item.innerHTML = `
-                <div class="frame-name">
-                    ${frame.name}
-                </div>
-
-                <div class="frame-id">
-                    ${frame.id}
-                </div>
-            `;
-
-            item.addEventListener("click", () => {
-
-                selectedIndex = index;
-
-                selectedText.textContent =
-                    frame.name;
-
-                selectedFrameEl.textContent =
-                    frame.name;
-
-                dropdown.classList.remove(
-                    "active"
-                );
-            });
-
-            dropdown.appendChild(item);
-
-        });
-
-    } catch (error) {
-
-        stopResponseTimer();
-
-        console.error(
-            "Request Error:",
-            error
-        );
-
-        showFrameError(
-            error.message ||
-            "Unable to connect to server"
-        );
-    }
-
-});
-
-
-/*
- * Show frame loading error
- */
-function showFrameError(message) {
-
-    responseBox.innerHTML = `
-
-        <div class="response-error">
-
-            <lottie-player
-                src="https://lottie.host/6cbcaee9-9e58-47b4-a601-96867f564bd7/xrbNgMIBMM.json"
-                background="transparent"
-                speed="1"
-                
-                autoplay>
-            </lottie-player>
-
-            <div class="response-error-message">
-
-                ERROR LOADING FARMES
-
-                <i
-                    class="fa-solid fa-circle-info error-info-icon"
-                    title="Show error details">
-                </i>
-
-            </div>
-
-        </div>
-    `;
-
-
-    /*
-     * Info icon
-     */
-    const errorInfoIcon =
-        responseBox.querySelector(
-            ".error-info-icon"
-        );
-
-
-    errorInfoIcon.addEventListener(
-        "click",
-        () => {
-
-            /*
-             * Clear the response panel
-             * and show the actual error
-             */
-            responseBox.innerHTML = `
-                <div class="actual-error-message">
-                    ${escapeHtml(message)}
-                </div>
-            `;
-
-        }
-    );
-}
 
 
 /*
@@ -2226,6 +2223,78 @@ function escapeHtml(text) {
         String(text);
 
     return div.innerHTML;
+}
+
+function displayResponse(text) {
+
+    fullResponseText = String(text);
+
+    const newlinePositions = [];
+    let searchStart = 0;
+
+    for (
+        let i = 0;
+        i < RESPONSE_PREVIEW_LINES;
+        i++
+    ) {
+
+        const newlineIndex =
+            fullResponseText.indexOf(
+                "\n",
+                searchStart
+            );
+
+        if (newlineIndex === -1) {
+            break;
+        }
+
+        newlinePositions.push(newlineIndex);
+
+        searchStart =
+            newlineIndex + 1;
+    }
+
+    /*
+    ---------------------------------------------------------
+    RESPONSE FITS WITHIN PREVIEW LIMIT
+    ---------------------------------------------------------
+    */
+
+    if (
+        newlinePositions.length <
+        RESPONSE_PREVIEW_LINES
+    ) {
+
+        responseBox.textContent =
+            fullResponseText;
+
+        return;
+    }
+
+    /*
+    ---------------------------------------------------------
+    SHOW ONLY FIRST 100 LINES
+    ---------------------------------------------------------
+    */
+
+    const previewEnd =
+        newlinePositions[
+            RESPONSE_PREVIEW_LINES - 1
+        ];
+
+    const preview =
+        fullResponseText.slice(
+            0,
+            previewEnd
+        );
+
+    responseBox.textContent =
+        preview +
+        "\n\n" +
+        "────────────────────────────────────────\n" +
+        "Response preview limited to 100 lines.\n" +
+        "Please use the Expand Response button to view the complete response.\n" +
+        "────────────────────────────────────────";
 }
 
     /*
@@ -2297,8 +2366,9 @@ function escapeHtml(text) {
             const data = await res.json();
             stopResponseTimer();
 
-            responseBox.textContent =
-                JSON.stringify(data,null,2);
+            displayResponse(
+    JSON.stringify(data, null, 2)
+);
 
         }catch(error){
             stopResponseTimer();
@@ -2319,9 +2389,8 @@ function escapeHtml(text) {
     */
 
     copyBtn.addEventListener("click", async ()=>{
-
-        const text =
-            responseBox.textContent;
+const text =
+    fullResponseText;
 
         if(!text.trim()){
             return;
@@ -4480,6 +4549,516 @@ if (bugForm) {
     loadNeemoVersion_footer();
 
 });
+// ============================================================
+// FIGMA MODE TOGGLE
+// ============================================================
+
+const figmaModeToggle =
+    document.getElementById("figmaModeToggle");
+
+const figmaUrlInput =
+    document.getElementById("figmaUrl");
+
+const loadFramesBtn =
+    document.getElementById("loadFramesBtn");
+
+let isFigmaKeyMode = false;
+
+
+figmaModeToggle.addEventListener("click", () => {
+
+    isFigmaKeyMode = !isFigmaKeyMode;
+
+
+    // ========================================================
+    // FIGMA JSON MODE
+    // ========================================================
+
+    if (isFigmaKeyMode) {
+
+        figmaModeToggle.classList.add("active");
+
+        figmaUrlInput.placeholder =
+            "Paste Figma URL...";
+
+        figmaUrlInput.value = "";
+
+        loadFramesBtn.classList.add("active");
+
+        loadFramesBtn.innerHTML = `
+            <i
+                class="fa-brands fa-figma btn-icon"
+                style="margin-right:3.5px;"
+            ></i>
+            Fetch Figma JSON
+        `;
+
+    }
+
+
+    // ========================================================
+    // NORMAL LOAD FRAMES MODE
+    // ========================================================
+
+    else {
+
+        figmaModeToggle.classList.remove("active");
+
+        figmaUrlInput.placeholder =
+            "Paste Figma URL...";
+
+        figmaUrlInput.value = "";
+
+        loadFramesBtn.classList.remove("active");
+
+        loadFramesBtn.innerHTML = `
+            <i class="fa-solid fa-bowl-food btn-icon"></i>
+            Feed URL
+        `;
+    }
+
+});
+
+
+// ============================================================
+// LOAD FRAMES / FETCH FIGMA JSON
+// ============================================================
+
+loadBtn.addEventListener("click", async () => {
+
+    const url = figmaUrl.value.trim();
+
+
+    // ========================================================
+    // COMMON VALIDATION
+    // ========================================================
+
+    if (!url) {
+
+        const originalPlaceholder =
+            figmaUrl.placeholder;
+
+        figmaUrl.placeholder =
+            "Please provide a Figma URL !";
+
+        figmaUrl.classList.add(
+            "error-placeholder"
+        );
+
+        setTimeout(() => {
+
+            figmaUrl.placeholder =
+                originalPlaceholder;
+
+            figmaUrl.classList.remove(
+                "error-placeholder"
+            );
+
+        }, 3000);
+
+        return;
+    }
+
+
+    // ========================================================
+    // NEW FIGMA JSON FLOW
+    // ========================================================
+    //
+    // Toggle ON
+    //
+    // Button:
+    // Fetch Figma JSON
+    //
+    // Figma URL
+    //      ↓
+    // api.php?action=fetch_figma_json
+    //      ↓
+    // PHP extracts Figma file key
+    //      ↓
+    // Flask :3001/figma/file
+    //      ↓
+    // Figma API
+    //
+    // ========================================================
+
+    if (isFigmaKeyMode) {
+
+        setLoading(
+            '<p style="margin-top:-43px">Fetching Figma JSON...</p>'
+        );
+
+
+        try {
+
+            const res = await fetch(
+                "api.php?action=fetch_figma_json",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        figma_url: url
+                    })
+                }
+            );
+
+
+            const data = await res.json();
+
+            stopResponseTimer();
+
+
+            // =================================================
+            // FIGMA API / FLASK ERROR
+            // =================================================
+
+        if (
+    !res.ok ||
+    data.status === "error"
+) {
+
+    console.error(
+        "Figma Error Data:",
+        data
+    );
+
+    console.error(
+        "Figma Error Message:",
+        data.message ||
+        "Unknown error"
+    );
+
+    showFrameError(
+        data.message ||
+        "Unknown error"
+    );
+
+    return;
+}
+
+            // =================================================
+            // SUCCESS
+            // =================================================
+
+           displayResponse(
+    JSON.stringify(data, null, 2)
+);
+
+
+            // If backend provides a file key,
+            // update the existing File Key display.
+
+            currentFileKey =
+                data.filekey ||
+                data.file_key ||
+                data.key ||
+                "";
+
+            fileKeyEl.textContent =
+                currentFileKey || "—";
+
+        }
+
+
+        // =====================================================
+        // REQUEST ERROR
+        // =====================================================
+
+        catch (error) {
+
+            stopResponseTimer();
+
+            console.error(
+                "Request Error:",
+                error
+            );
+
+            showFrameError(
+                error.message ||
+                "Unable to connect to server"
+            );
+        }
+
+
+        // IMPORTANT:
+        // Prevent the existing load_frames logic
+        // below from executing in Figma JSON mode.
+
+        return;
+    }
+
+
+    // ========================================================
+    // EXISTING LOAD FRAMES LOGIC
+    // ========================================================
+    //
+    // THIS IS YOUR ORIGINAL LOGIC.
+    // It remains unchanged.
+    //
+    // Toggle OFF → Feed URL → load_frames
+    //
+    // ========================================================
+
+    setLoading(
+        '<p style="margin-top:-43px">Loading Frames...</p>'
+    );
+
+
+    try {
+
+        const res = await fetch(
+            "api.php?action=load_frames",
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type":
+                        "application/json"
+                },
+
+                body: JSON.stringify({
+                    figma_url: url
+                })
+            }
+        );
+
+
+        const data = await res.json();
+
+        stopResponseTimer();
+
+
+        // Flask returned an error
+
+        if (!res.ok || data.status === "error") {
+
+            console.error(
+                "Flask Error:",
+                data.message ||
+                "Unknown error"
+            );
+
+            showFrameError(
+                data.message ||
+                "Unknown error"
+            );
+
+            return;
+        }
+
+
+        // Normal successful response
+
+        responseBox.textContent =
+            JSON.stringify(
+                data,
+                null,
+                2
+            );
+
+
+        currentFileKey =
+            data.filekey || "";
+
+
+        frameList =
+            data.frame_list || [];
+
+
+        selectedIndex = null;
+
+
+        fileKeyEl.textContent =
+            currentFileKey || "—";
+
+
+        framesLoadedEl.textContent =
+            frameList.length;
+
+
+        selectedFrameEl.textContent =
+            "—";
+
+
+        selectedText.textContent =
+            "-- Select Frame --";
+
+
+        dropdown.innerHTML = "";
+
+
+        frameList.forEach((frame, index) => {
+
+            const item =
+                document.createElement("div");
+
+
+            item.className =
+                "dropdown-item";
+
+
+            item.innerHTML = `
+                <div class="frame-name">
+                    ${frame.name}
+                </div>
+
+                <div class="frame-id">
+                    ${frame.id}
+                </div>
+            `;
+
+
+            item.addEventListener(
+                "click",
+                () => {
+
+                    selectedIndex =
+                        index;
+
+
+                    selectedText.textContent =
+                        frame.name;
+
+
+                    selectedFrameEl.textContent =
+                        frame.name;
+
+
+                    dropdown.classList.remove(
+                        "active"
+                    );
+
+                }
+            );
+
+
+            dropdown.appendChild(item);
+
+        });
+
+    }
+
+
+    // ========================================================
+    // EXISTING ERROR HANDLING
+    // ========================================================
+
+    catch (error) {
+
+        stopResponseTimer();
+
+        console.error(
+            "Request Error:",
+            error
+        );
+
+        showFrameError(
+            error.message ||
+            "Unable to connect to server"
+        );
+    }
+
+});
+
+
+// ============================================================
+// SHOW FRAME LOADING ERROR
+// ============================================================
+
+function showFrameError(message) {
+
+    responseBox.innerHTML = `
+        <div class="response-error">
+
+            <lottie-player
+                src="https://lottie.host/6cbcaee9-9e58-47b4-a601-96867f564bd7/xrbNgMIBMM.json"
+                background="transparent"
+                speed="1"
+                autoplay>
+            </lottie-player>
+
+            <div class="response-error-message">
+
+                ERROR LOADING FARMES
+
+                <i
+                    class="fa-solid fa-circle-info error-info-icon"
+                    title="Show error details">
+                </i>
+
+            </div>
+
+        </div>
+    `;
+
+
+    // ========================================================
+    // INFO ICON
+    // ========================================================
+
+    const errorInfoIcon =
+        responseBox.querySelector(
+            ".error-info-icon"
+        );
+
+
+    errorInfoIcon.addEventListener(
+        "click",
+        () => {
+
+            // Clear the response panel
+            // and show the actual error.
+
+            responseBox.innerHTML = `
+                <div class="actual-error-message">
+                    ${escapeHtml(message)}
+                </div>
+            `;
+
+        }
+    );
+
+}
+/* ============================================================
+   LOGS STARTUP OVERLAY
+   ============================================================ */
+
+function showLogsStartupOverlay() {
+
+    const overlay =
+        document.getElementById(
+            "logsStartupOverlay"
+        );
+
+    if (!overlay) {
+        return;
+    }
+
+    overlay.classList.remove("hide");
+
+    setTimeout(() => {
+
+        overlay.classList.add("hide");
+
+    }, 5000);
+}
+
+
+/* Run on every page refresh */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    () => {
+
+        showLogsStartupOverlay();
+
+    }
+);
+
 
 
 

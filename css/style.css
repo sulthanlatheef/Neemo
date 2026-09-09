@@ -8500,3 +8500,441 @@ font-family:"JetBrains Mono", monospace;
 
     overflow-y: auto;
 }
+.figma-title-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.figma-mode-icon {
+    width: 26px;
+    height: 26px;
+    object-fit: contain;
+    cursor: pointer;
+    margin-left:25px;
+}
+
+.figma-mode-icon:hover {
+    transform: scale(1.1);
+}
+
+.figma-mode-icon.active {
+    color: #22c55e;
+    animation: figmaIconWiggle 1.8s ease-in-out infinite;
+    transform-origin: center;
+}
+
+@keyframes figmaIconWiggle {
+    /* Pause */
+    0%, 55%, 100% {
+        transform: rotate(0deg);
+    }
+
+    /* Gentle wiggle */
+    60% {
+        transform: rotate(-8deg);
+    }
+
+    68% {
+        transform: rotate(6deg);
+    }
+
+    76% {
+        transform: rotate(-4deg);
+    }
+
+    84% {
+        transform: rotate(2deg);
+    }
+
+    92% {
+        transform: rotate(0deg);
+    }
+}
+/* File Key mode button */
+#loadFramesBtn {
+    transition:
+        background 0.3s ease,
+        border-color 0.3s ease,
+        box-shadow 0.3s ease,
+        transform 0.25s ease;
+}
+
+#loadFramesBtn.active {
+    background: rgba(255, 255, 255, 0.08);
+  
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+
+    box-shadow:
+        0 8px 24px rgba(0, 0, 0, 0.12),
+        inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+#loadFramesBtn.active:hover {
+    background: rgba(255, 255, 255, 0.13);
+   
+
+    box-shadow:
+        0 10px 28px rgba(0, 0, 0, 0.16),
+        inset 0 1px 0 rgba(255, 255, 255, 0.16);
+
+    transform: translateY(-2px);
+}
+/* ============================================================
+   FIGMA COLOR TRAIN BORDER
+   ============================================================ */
+@property --figma-angle {
+    syntax: "<angle>";
+    initial-value: 0deg;
+    inherits: false;
+}
+.panel:has(#figmaModeToggle.active) {
+    position: relative;
+    isolation: isolate;
+}
+
+
+.panel:has(#figmaModeToggle.active)::before {
+    content: "";
+
+    position: absolute;
+    inset: -2px;
+
+    border-radius: inherit;
+
+    padding: 4px;
+
+    background: conic-gradient(
+        from var(--figma-angle),
+
+        #f24e1e 0deg 45deg,
+        transparent 45deg 55deg,
+
+        #ff7262 55deg 100deg,
+        transparent 100deg 110deg,
+
+        #a259ff 110deg 155deg,
+        transparent 155deg 165deg,
+
+        #1abcfe 165deg 210deg,
+        transparent 210deg 220deg,
+
+        #0acf83 220deg 265deg,
+        transparent 265deg 275deg,
+
+        #f24e1e 275deg 320deg,
+        transparent 320deg 330deg,
+
+        #ff7262 330deg 360deg
+    );
+
+    animation:
+        figmaTrainAround 4.5s linear infinite;
+
+    -webkit-mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+
+    pointer-events: none;
+
+    z-index: 0;
+}
+
+
+.panel:has(#figmaModeToggle.active) > * {
+    position: relative;
+    z-index: 1;
+}
+
+
+@keyframes figmaTrainAround {
+
+    from {
+        --figma-angle: 0deg;
+    }
+
+    to {
+        --figma-angle: 360deg;
+    }
+
+}
+
+/* ============================================================
+   LOGS STARTUP OVERLAY
+   ============================================================ */
+
+.logs-startup-overlay {
+    position: absolute;
+    inset: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    z-index: 20;
+
+   background: rgba(8, 12, 20, 1);
+
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+
+    opacity: 1;
+    visibility: visible;
+
+    transition:
+        opacity 0.6s ease,
+        visibility 0.6s ease;
+}
+
+
+/* Hidden state */
+
+.logs-startup-overlay.hide {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+
+/* Content */
+
+.logs-startup-content {
+    text-align: center;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    animation: logsStartupEnter 0.7s ease;
+}
+
+
+/* Icon */
+
+.logs-startup-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 8px;
+}
+
+.logs-startup-icon i {
+    font-size: 24px;
+}
+
+
+/* Main message */
+
+.logs-startup-message {
+    font-size: 20px;
+    font-weight: 600;
+
+    letter-spacing: 0.2px;
+
+    margin-bottom: 7px;
+}
+
+
+/* Subtitle */
+
+.logs-startup-subtitle {
+    font-size: 13px;
+
+    opacity: 0.55;
+
+    letter-spacing: 0.3px;
+}
+
+
+/* Entrance animation */
+
+@keyframes logsStartupEnter {
+
+    from {
+        opacity: 0;
+        transform: translateY(8px) scale(0.97);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+
+}
+.logs-startup-builder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+     margin-bottom:-15px;
+    padding: 7px 16px;
+
+    border-radius: 999px;
+
+    background: rgba(255, 255, 255, 0.035);
+
+    border: 1px solid rgba(255, 255, 255, 0.10);
+
+    box-shadow:
+        0 0 20px rgba(25, 230, 255, 0.07),
+        inset 0 0 12px rgba(255, 255, 255, 0.025);
+
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+
+    animation: builderBadgeIn 0.8s ease both;
+}
+
+.builder-text {
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: 2.4px;
+
+    background: linear-gradient(
+        90deg,
+        #19e6ff,
+        #6c8cff,
+        #a66cff
+    );
+
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+   
+}
+
+
+/* Lottie */
+.logs-startup-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-top: -2px;
+    margin-bottom: 2px;
+
+    animation: builderFloat 2.8s ease-in-out infinite;
+}
+
+
+/* Main message */
+.logs-startup-message {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+
+    margin-bottom: 6px;
+
+    background: linear-gradient(
+        90deg,
+        #19e6ff,
+        #6c8cff,
+        #a66cff
+    );
+
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+
+/* Subtitle */
+.logs-startup-subtitle {
+    font-size: 14px;
+    opacity: 0.82;
+    letter-spacing: 0.4px;
+}
+
+
+/* Badge entrance */
+@keyframes builderBadgeIn {
+    from {
+        opacity: 0;
+        transform: translateY(6px) scale(0.94);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+
+/* Very subtle animation movement */
+@keyframes builderFloat {
+    0%, 100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-4px);
+    }
+}
+
+.logs-refresh-btn{
+    width:50px;
+    height:50px;
+    padding:5px;
+    flex-shrink:0;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    border-radius:25px;
+
+    background:
+        rgba(255,255,255,0.05);
+
+    border:
+        1px solid rgba(255,255,255,0.08);
+
+    color:#00f5ff;
+
+    font-size:19px;
+
+    cursor:pointer;
+
+    backdrop-filter:blur(12px);
+
+    transition:
+        transform 0.25s ease,
+        background 0.25s ease,
+        box-shadow 0.25s ease,
+        border-color 0.25s ease;
+}
+
+.logs-refresh-btn:hover{
+
+    transform:
+        translateY(-1px);
+
+    background:
+        rgba(0,245,255,0.08);
+
+    border-color:
+        rgba(0,245,255,0.35);
+
+    box-shadow:
+        0 0 18px rgba(0,245,255,0.15);
+}
+
+.logs-refresh-btn:active{
+
+    transform:
+        scale(0.94);
+}
+
+.logs-refresh-btn i{
+    transition:
+        transform 0.5s ease;
+}
+
+.logs-refresh-btn:hover i{
+    transform:
+        rotate(180deg);
+}

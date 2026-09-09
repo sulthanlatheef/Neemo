@@ -110,22 +110,59 @@
         </div>
 
         <!-- URL PANEL -->
+<!-- URL PANEL -->
 <div class="panel glass">
 
     <div class="panel-title figma-header">
-        <p class="performance-title">Figma URL</p>
+
+        <div class="figma-title-wrapper">
+
+            <p class="performance-title">
+                Figma URL
+            </p>
+
+            <!-- Figma JSON Toggle -->
+            <img
+                src="figma.png"
+                class="figma-mode-icon"
+                id="figmaModeToggle"
+                
+                alt="Figma"
+            >
+
+        </div>
 
         <div class="env-switch">
-            <span class="env-label active" id="localLabel">LOCAL</span>
+
+            <span
+                class="env-label active"
+                id="localLabel"
+            >
+                LOCAL
+            </span>
 
             <label class="switch">
-                <input type="checkbox" id="environmentToggle">
+
+                <input
+                    type="checkbox"
+                    id="environmentToggle"
+                >
+
                 <span class="slider"></span>
+
             </label>
 
-            <span class="env-label" id="devLabel">DEV</span>
+            <span
+                class="env-label"
+                id="devLabel"
+            >
+                DEV
+            </span>
+
         </div>
+
     </div>
+
 
     <input
         type="text"
@@ -133,9 +170,16 @@
         placeholder="Paste Figma URL..."
     >
 
-    <button id="loadFramesBtn" style="font-size:15px;">
+
+    <button
+        id="loadFramesBtn"
+        style="font-size:15px;"
+    >
+
         <i class="fa-solid fa-bowl-food btn-icon"></i>
+
         Feed URL
+
     </button>
 
 </div>
@@ -295,6 +339,36 @@
         </div>
 
     </div>
+    <!-- LOGS STARTUP OVERLAY -->
+<div class="logs-startup-overlay" id="logsStartupOverlay">
+
+    <div class="logs-startup-content">
+<div class="logs-startup-builder">
+    <span class="builder-text">Setting Up Neemo</span>
+</div>
+
+<div class="logs-startup-icon">
+    <lottie-player
+        src="https://lottie.host/53ff1b10-80f4-4650-aa1b-4a75f4dfb5ca/54vYvh7IWc.json"
+        background="transparent"
+        speed="1"
+        style="width: 260px; height: 260px;z-index:1000;"
+        loop
+        autoplay>
+    </lottie-player>
+</div>
+
+<div class="logs-startup-message">
+    Great things take time
+</div>
+
+<div class="logs-startup-subtitle">
+    Getting everything ready...
+</div>
+
+    </div>
+
+</div>
 
     <!-- DEV MODE OVERLAY -->
    <div class="dev-overlay">
@@ -771,9 +845,21 @@
 
         </div>
         
+        
 
     </div>
+  
+
   <div class="modal-actions"> 
+     <button
+    id="refreshLogsBtn"
+    class="logs-refresh-btn"
+    
+  
+>
+    <i class="fa-solid fa-arrows-rotate"></i>
+</button>
+    
    <div class="search-wrapper">
 
     <i

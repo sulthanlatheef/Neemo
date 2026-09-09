@@ -331,7 +331,226 @@ if ($action === "update_nemo") {
 
     exit;
 }
+/*
+|--------------------------------------------------------------------------
+| FETCH FIGMA JSON
+|--------------------------------------------------------------------------
+*/
+$flaskBaseUrl = "http://127.0.0.1:3001";
 
+if ($action === 'fetch_figma_json') {
+
+    try {
+
+        $input = json_decode(
+            file_get_contents("php://input"),
+            true
+        );
+
+        if (!is_array($input)) {
+
+            http_response_code(400);
+
+            echo json_encode([
+                "status" => "error",
+                "message" => "Invalid request body."
+            ]);
+
+            exit;
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | GET INPUT
+        |--------------------------------------------------------------------------
+        */
+
+        $mode = trim(
+            $input["mode"] ?? "url"
+        );
+
+        $figmaUrl = trim(
+            $input["figma_url"] ?? ""
+        );
+
+        $fileKey = trim(
+            $input["file_key"] ?? ""
+        );
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | FILE KEY MODE
+        |--------------------------------------------------------------------------
+        */
+
+        if ($mode === "key") {
+
+            if ($fileKey === "") {
+
+                http_response_code(400);
+
+                echo json_encode([
+                    "status" => "error",
+                    "message" => "Figma file key is required."
+                ]);
+
+                exit;
+            }
+
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | URL MODE
+        |--------------------------------------------------------------------------
+        */
+
+        else {
+
+            if ($figmaUrl === "") {
+
+                http_response_code(400);
+
+                echo json_encode([
+                    "status" => "error",
+                    "message" => "Figma URL is required."
+                ]);
+
+                exit;
+            }
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | PARSE FIGMA URL
+            |--------------------------------------------------------------------------
+            */
+
+            $parsedUrl = parse_url($figmaUrl);
+
+            $host = strtolower(
+                $parsedUrl["host"] ?? ""
+            );
+
+            $path = $parsedUrl["path"] ?? "";
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | VALIDATE FIGMA HOST
+            |--------------------------------------------------------------------------
+            */
+
+            if (
+                $host !== "figma.com" &&
+                $host !== "www.figma.com"
+            ) {
+
+                http_response_code(400);
+
+                echo json_encode([
+                    "status" => "error",
+                    "message" => "Please provide a valid Figma URL."
+                ]);
+
+                exit;
+            }
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | EXTRACT FILE KEY
+            |--------------------------------------------------------------------------
+            |
+            | Supports:
+            |
+            | /design/FILE_KEY/...
+            | /file/FILE_KEY/...
+            |
+            */
+
+            $pathParts = array_values(
+                array_filter(
+                    explode(
+                        "/",
+                        trim($path, "/")
+                    )
+                )
+            );
+
+            $fileKey = "";
+
+            foreach ($pathParts as $index => $part) {
+
+                if (
+                    ($part === "design" || $part === "file")
+                    &&
+                    isset($pathParts[$index + 1])
+                ) {
+
+                    $fileKey =
+                        trim(
+                            $pathParts[$index + 1]
+                        );
+
+                    break;
+                }
+            }
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | FILE KEY NOT FOUND
+            |--------------------------------------------------------------------------
+            */
+
+            if ($fileKey === "") {
+
+                http_response_code(400);
+
+                echo json_encode([
+                    "status" => "error",
+                    "message" =>
+                        "Unable to extract Figma file key from the provided URL."
+                ]);
+
+                exit;
+            }
+
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | PHP → FLASK / NEMO ENGINE
+        |--------------------------------------------------------------------------
+        */
+
+        echo postJsonRequest(
+            $flaskBaseUrl . "/figma/file",
+            [
+                "file_key" => $fileKey
+            ]
+        );
+
+        exit;
+
+
+    } catch (Exception $e) {
+
+        http_response_code(500);
+
+        echo json_encode([
+            "status" => "error",
+            "message" => $e->getMessage()
+        ]);
+
+        exit;
+    }
+}
 
 /*
 |--------------------------------------------------------------------------
