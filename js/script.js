@@ -5,7 +5,7 @@ Nemo Client Version
 (Update this for every release)
 ===========================================
 */
-const NEMO_VERSION = "1.0.6 Beta";
+const NEMO_VERSION = "1.0.7 Beta";
 const CONTROL_SERVER =
     "https://neemo-controller-server.onrender.com";
    
@@ -79,6 +79,29 @@ const startNemoBtn =
     document.getElementById(
         "startNemoBtn"
     );
+
+let Neemobtnstatus = false;
+let flaskIsRunning = false;
+function updateNeemoButtonState() {
+
+    if (!Neemobtnstatus) {
+
+        const shouldDisable = flaskIsRunning;
+
+        startNemoBtn.disabled = shouldDisable;
+
+        startNemoBtn.style.opacity =
+            shouldDisable
+                ? "0.6"
+                : "1";
+
+        startNemoBtn.style.cursor =
+            shouldDisable
+                ? "not-allowed"
+                : "pointer";
+    }
+}
+
 const stopNemoBtn =
     document.getElementById(
         "stopNemoBtn"
@@ -1494,18 +1517,21 @@ nemoEngineOverlay.classList.add("hidden");
         );
 
     }
+  
+    flaskIsRunning = true;
+    updateNeemoButtonState();
 
-            startNemoBtn.disabled = true;
+            // startNemoBtn.disabled = true;
 
-            startNemoBtn.style.opacity = "0.6";
+            // startNemoBtn.style.opacity = "0.6";
 
-            startNemoBtn.style.cursor =
-                "not-allowed";
+            // startNemoBtn.style.cursor =
+            //     "not-allowed";
 
              startNemoBtn.innerHTML = `
-                <i class="fas fa-play"></i>
-                Neemo Running
-            `;
+                 <i class="fas fa-play"></i>
+                 Neemo Running
+             `;
             /*
     |--------------------------------------------------------------------------
     | DISABLE DEPENDENT CONTROLS
@@ -1577,15 +1603,16 @@ nemoEngineOverlay.classList.add("hidden");
     | NEMO BUTTON
     |--------------------------------------------------------------------------
     */
+    flaskIsRunning = false;
+    updateNeemoButtonState();
+    // startNemoBtn.disabled = false;
 
-    startNemoBtn.disabled = false;
+    // startNemoBtn.style.opacity = "1";
 
-    startNemoBtn.style.opacity = "1";
-
-    startNemoBtn.style.cursor = "pointer";
+    // startNemoBtn.style.cursor = "pointer";
 
     startNemoText.textContent =
-        "Start Nemo";
+        "Start Neemo";
 
 
     /*
@@ -2590,9 +2617,14 @@ startNemoBtn.addEventListener(
             
             // Store original button content
             const originalHTML = startNemoBtn.innerHTML;
+             
+
              startNemoBtn.disabled = true;
             startNemoBtn.style.opacity = "0.6";
             startNemoBtn.style.cursor="not-allowed";
+
+             Neemobtnstatus = true;
+            //  updateNeemoButtonState();
             
 
             // Show loading state
@@ -2616,7 +2648,9 @@ startNemoBtn.addEventListener(
 
             setTimeout(()=>{
 
-                checkNemoStatus();
+                Neemobtnstatus = false;
+
+                // checkNemoStatus();
 
              
                 
@@ -2625,6 +2659,7 @@ startNemoBtn.addEventListener(
 
 
         }catch(error){
+            Neemobtnstatus = false;
 
             console.error(error);
 
@@ -2762,7 +2797,7 @@ stopNemoBtn.addEventListener(
 
             setTimeout(()=>{
 
-                checkNemoStatus();
+                
 
                 checkFlaskStatus();
 
@@ -2775,6 +2810,7 @@ stopNemoBtn.addEventListener(
                 <i class="fas fa-play" style="font-size: 19.5px;"></i>
                 Start Neemo
             `;
+            checkNemoStatus();
 
             }, 3000);
 
@@ -3020,7 +3056,7 @@ async function updateWeather(){
 
         const res = await fetch(
 
-            "https://api.openweathermap.org/data/2.5/weather?zip=690501,IN&units=metric&appid=10d5f9d0ede41902de34abe536ade63d"
+            "https://api.openweathermap.org/data/2.5/weather?zip=690574,IN&units=metric&appid=10d5f9d0ede41902de34abe536ade63d"
 
         );
 
