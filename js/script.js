@@ -5,7 +5,7 @@ Nemo Client Version
 (Update this for every release)
 ===========================================
 */
-const NEMO_VERSION = "1.1.2 Beta";
+const NEMO_VERSION = "1.1.3 Beta";
 const CONTROL_SERVER =
     "https://neemo-controller-server.onrender.com";
    
@@ -2315,13 +2315,15 @@ function displayResponse(text) {
             previewEnd
         );
 
-    responseBox.textContent =
-        preview +
-        "\n\n" +
-        "────────────────────────────────────────\n" +
-        "Response preview limited to 100 lines.\n" +
-        "Please use the Expand Response button to view the complete response.\n" +
-        "────────────────────────────────────────";
+   responseBox.innerHTML =
+    preview +
+    "<br><br>" +
+    '<span style="color: orange;">' +
+    "───────────────────────────────────────────────────────────────────────────<br>" +
+    "Response preview limited to 100 lines.<br>" +
+    "Please use the Expand Response button to view the complete response.<br>" +
+    "────────────────────────────────────────────────────────────────────────────" +
+    "</span>";
 }
 
     /*
@@ -2883,7 +2885,40 @@ async function checkFlaskStatus(){
 | LIVE PERFORMANCE METRICS
 |--------------------------------------------------------------------------
 */
+function formatNetworkSpeed(kbPerSecond){
 
+    const kb = Number(kbPerSecond) || 0;
+
+    /*
+     * KB/s → Mbps
+     */
+    const mbps =
+        (kb * 1024 * 8) / 1000000;
+
+    /*
+     * Small speed
+     */
+    if(kb < 1024){
+
+        return `${kb.toFixed(kb < 10 ? 1 : 0)} KB/s`;
+    }
+
+    /*
+     * Medium speed
+     */
+    if(mbps < 1){
+
+        const mbPerSecond =
+            kb / 1024;
+
+        return `${mbPerSecond.toFixed(1)} MB/s`;
+    }
+
+    /*
+     * Large speed
+     */
+    return `${mbps.toFixed(mbps < 10 ? 2 : 1)} Mbps`;
+}
 /*
 |--------------------------------------------------------------------------
 | LIVE PERFORMANCE METRICS
@@ -2952,10 +2987,10 @@ async function updatePerformanceMetrics(){
         ).textContent =
             `${data.ram}%`;
 
-        document.getElementById(
-            "internetSpeed"
-        ).textContent =
-            `${data.network} KB/s`;
+       document.getElementById(
+    "internetSpeed"
+).textContent =
+    formatNetworkSpeed(data.network);
 
         /*
         |--------------------------------------------------------------------------
@@ -4889,12 +4924,10 @@ loadBtn.addEventListener("click", async () => {
 
         // Normal successful response
 
-        responseBox.textContent =
-            JSON.stringify(
-                data,
-                null,
-                2
-            );
+                 displayResponse(
+    JSON.stringify(data, null, 2)
+);
+
 
 
         currentFileKey =
