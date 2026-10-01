@@ -1,35 +1,50 @@
 <?php
 
-require_once __DIR__ . "/vendor/autoload.php";
+// require_once __DIR__ . "/vendor/autoload.php";
 
-$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+// $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
 
-$dotenv->load();
+// $dotenv->load();
 
-if (empty($_ENV["NEEMO_BAT_FILE"])) {
+// if (empty($_ENV["NEEMO_BAT_FILE"])) {
+
+//     http_response_code(500);
+
+//     echo json_encode([
+//         "status" => "error",
+//         "message" => "Environment file was not loaded or NEEMO_BAT_FILE is missing."
+//     ]);
+
+//     exit;
+// }
+
+error_reporting(E_ALL);
+
+ini_set('display_errors', 0);
+ini_set('log_errors', 1);
+
+header("Content-Type: application/json");
+set_error_handler(function ($severity, $message, $file, $line) {
 
     http_response_code(500);
 
     echo json_encode([
         "status" => "error",
-        "message" => "Environment file was not loaded or NEEMO_BAT_FILE is missing."
+        "message" => $message,
+        "file" => basename($file),
+        "line" => $line
     ]);
 
     exit;
-}
-
-error_reporting(E_ALL);
-
-ini_set('display_errors', 1);
-
-header("Content-Type: application/json");
+});
 
 $action = $_GET['action'] ?? '';
 
-$fastapiBaseUrl = "http://127.0.0.1:5000/figmaimport";
+$fastapiBaseUrl = "http://host.docker.internal:5000/figmaimport";
 
-$devControllerBaseUrl = "http://127.0.0.1:3001";
+$devControllerBaseUrl = "http://host.docker.internal:3001";
 
+$neemoControllerBaseUrl = "http://host.docker.internal:5003";
 /*
 |--------------------------------------------------------------------------
 | HELPER FUNCTION
@@ -41,21 +56,34 @@ function sendGetRequest($url)
     $ch = curl_init();
 
     curl_setopt_array($ch, [
-
         CURLOPT_URL => $url,
-
-        CURLOPT_RETURNTRANSFER => true
-
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_TIMEOUT => 10,
+        CURLOPT_CONNECTTIMEOUT => 5
     ]);
 
     $response = curl_exec($ch);
 
-    if (curl_errno($ch)) {
+    $curlError = curl_error($ch);
+    $curlErrorNo = curl_errno($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+    curl_close($ch);
+
+    if ($response === false) {
+
+        http_response_code(500);
 
         return json_encode([
-            "error" => curl_error($ch)
+            "status" => "error",
+            "message" => "Failed to contact server.",
+            "url" => $url,
+            "curl_error" => $curlError,
+            "curl_error_code" => $curlErrorNo
         ]);
     }
+
+    http_response_code($httpCode ?: 200);
 
     return $response;
 }
@@ -143,34 +171,9 @@ if ($action === 'get_status') {
 
 if ($action === 'start_nemo') {
 
-    try {
-
-        $batFile = $_ENV["NEEMO_BAT_FILE"];
-
-        $process = popen(
-            'cmd /c start "" "' . $batFile . '"',
-            'r'
-        );
-
-        if ($process === false) {
-            throw new Exception("Failed to start Nemo.");
-        }
-
-        pclose($process);
-
-        echo json_encode([
-            "status" => "started"
-        ]);
-
-    } catch (Exception $e) {
-
-        http_response_code(500);
-
-        echo json_encode([
-            "status" => "error",
-            "message" => $e->getMessage()
-        ]);
-    }
+    echo sendGetRequest(
+        $neemoControllerBaseUrl . "/start"
+    );
 
     exit;
 }
@@ -186,19 +189,14 @@ function postJsonRequest($url, $payload)
             "Content-Type: application/json"
         ],
         CURLOPT_POSTFIELDS => json_encode($payload),
-        CURLOPT_TIMEOUT => 0
+        CURLOPT_TIMEOUT => 30,
+        CURLOPT_CONNECTTIMEOUT => 5
     ]);
 
     $response = curl_exec($ch);
 
-    if (curl_errno($ch)) {
-
-        $error = curl_error($ch);
-
-        curl_close($ch);
-
-        throw new Exception($error);
-    }
+    $curlError = curl_error($ch);
+    $curlErrorNo = curl_errno($ch);
 
     $status = curl_getinfo(
         $ch,
@@ -207,16 +205,70 @@ function postJsonRequest($url, $payload)
 
     curl_close($ch);
 
-    // Return Flask's response even when Flask returns 400/500
+
+    // =====================================================
+    // CURL CONNECTION ERROR
+    // =====================================================
+
+    if ($response === false) {
+
+        http_response_code(502);
+
+        return json_encode([
+            "status" => "error",
+            "message" => "Failed to connect to backend server.",
+            "url" => $url,
+            "curl_error" => $curlError,
+            "curl_error_code" => $curlErrorNo
+        ]);
+    }
+
+
+    // =====================================================
+    // EMPTY BACKEND RESPONSE
+    // =====================================================
+
+    if ($response === "") {
+
+        http_response_code(
+            $status >= 400
+                ? $status
+                : 502
+        );
+
+        return json_encode([
+            "status" => "error",
+            "message" => "Backend returned an empty response.",
+            "url" => $url,
+            "http_status" => $status
+        ]);
+    }
+
+
+    // =====================================================
+    // BACKEND RETURNED ERROR
+    // =====================================================
+
     if ($status >= 400) {
 
         http_response_code($status);
 
-        return $response;
+        return json_encode([
+            "status" => "error",
+            "message" => "Backend returned an error.",
+            "backend_status" => $status,
+            "backend_response" => $response,
+            "url" => $url
+        ]);
     }
 
+
+    // =====================================================
+    // SUCCESS
+    // =====================================================
+
     return $response;
-}
+} 
 /*
 |--------------------------------------------------------------------------
 | HEALTH CHECK
@@ -226,7 +278,7 @@ function postJsonRequest($url, $payload)
 if ($action === 'health') {
 
     echo sendGetRequest(
-        "http://127.0.0.1:5000/health"
+        "http://host.docker.internal:5000/health"
     );
 
     exit;
@@ -242,7 +294,7 @@ if ($action === 'load_frames') {
    $input = json_decode(file_get_contents("php://input"), true);
 
 echo postJsonRequest(
-    "http://127.0.0.1:3001/load_frames",
+    "http://host.docker.internal:3001/load_frames",
     [
         "figma_url" => $input["figma_url"]
     ]
@@ -261,7 +313,7 @@ if ($action === 'generate_json') {
    $input = json_decode(file_get_contents("php://input"), true);
 
 echo postJsonRequest(
-    "http://127.0.0.1:3001/generate_json",
+    "http://host.docker.internal:3001/generate_json",
     [
         "file_key" => $input["file_key"],
         "frame_name" => $input["frame_name"]
@@ -277,7 +329,7 @@ if ($action === "update_nemo") {
     $ch = curl_init();
 
     curl_setopt_array($ch, [
-        CURLOPT_URL => "http://127.0.0.1:3001/update-client",
+        CURLOPT_URL => "http://host.docker.internal:3001/update-client",
         CURLOPT_POST => true,
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_HEADER => false,
@@ -336,7 +388,7 @@ if ($action === "update_nemo") {
 | FETCH FIGMA JSON
 |--------------------------------------------------------------------------
 */
-$flaskBaseUrl = "http://127.0.0.1:3001";
+$flaskBaseUrl = "http://host.docker.internal:3001";
 
 if ($action === 'fetch_figma_json') {
 

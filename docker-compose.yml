@@ -1,0 +1,22 @@
+services:
+  neemo:
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    container_name: neemo_figma
+
+    ports:
+      - "8081:80"
+
+    volumes:
+      - ./index.php:/var/www/html/index.php
+      - ./api.php:/var/www/html/api.php
+      - ./Config:/var/www/html/Config
+      - ./CSS:/var/www/html/css
+      - ./JS:/var/www/html/js
+      - ./vendor:/var/www/html/vendor
+      - ./favicon.png:/var/www/html/favicon.png
+      - ./figma.png:/var/www/html/figma.png
+
+    restart: unless-stopped

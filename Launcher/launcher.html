@@ -1,0 +1,169 @@
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+    <title>Neemo</title>
+    <link rel="stylesheet" href="launcher.css">
+</head>
+
+<body>
+    <div class="launcher-shell">
+        <div class="shell-glow"></div>
+
+        <!-- =====================================================
+             TOP BAR
+        ====================================================== -->
+        <header class="topbar pywebview-drag-region">
+            <div class="brand-block pywebview-drag-region">
+                <div class="brand-name">Neemo<span>™</span> - Getting Things Ready.....</div>
+                <!-- <div class="brand-line"></div> -->
+            </div>
+
+            <button
+                id="closeButton"
+                class="window-close"
+                type="button"
+                aria-label="Close launcher"
+                title="Close"
+            >
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M7 7L17 17M17 7L7 17"></path>
+                </svg>
+            </button>
+        </header>
+
+        <!-- =====================================================
+             MAIN CONTENT
+        ====================================================== -->
+        <main class="content">
+            <!-- Hero image -->
+            <section class="hero-card">
+                <div class="hero-frame">
+                    <img
+                        id="heroImage"
+                        src="neemo_launcher.png"
+                        alt="Neemo launcher"
+                    >
+                    <div class="hero-sheen"></div>
+                    <div id="heroFallback" class="hero-fallback">
+                        <span>NEEMO</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Status panel -->
+            <section class="status-panel">
+                <div class="status-header">
+                    <div class="status-main">
+                        <span id="statusDot" class="status-dot"></span>
+                        <span id="statusText" class="status-text">
+                            Starting Neemo...
+                        </span>
+                    </div>
+
+                    <span id="stateText" class="state-text">
+                        INITIALIZING
+                    </span>
+                </div>
+
+                <div class="progress-track" aria-label="Startup progress">
+                    <div id="progressFill" class="progress-fill"></div>
+                    <div class="progress-shimmer"></div>
+                </div>
+
+                <!-- Service cards -->
+                <div class="services-grid">
+                    <article
+                        class="service-card"
+                        id="service-docker"
+                        data-service="docker"
+                    >
+                        <div class="service-accent"></div>
+                        <div class="service-icon" data-icon="docker"></div>
+                        <div class="service-name">Docker</div>
+                        <div
+                            class="service-badge waiting"
+                            data-badge="docker"
+                        >
+                            WAITING
+                        </div>
+                    </article>
+
+                    <article
+                        class="service-card"
+                        id="service-controller"
+                        data-service="controller"
+                    >
+                        <div class="service-accent"></div>
+                        <div class="service-icon" data-icon="controller"></div>
+                        <div class="service-name">Controller</div>
+                        <div
+                            class="service-badge waiting"
+                            data-badge="controller"
+                        >
+                            WAITING
+                        </div>
+                    </article>
+
+                    <article
+                        class="service-card"
+                        id="service-web"
+                        data-service="web"
+                    >
+                        <div class="service-accent"></div>
+                        <div class="service-icon" data-icon="web"></div>
+                        <div class="service-name">Neemo Web</div>
+                        <div
+                            class="service-badge waiting"
+                            data-badge="web"
+                        >
+                            WAITING
+                        </div>
+                    </article>
+                </div>
+            </section>
+
+            <footer class="footer-text">
+                <span>  © 2026 Neemo • All Rights Reserved</span>
+                <!-- <span class="footer-pulse"></span> -->
+            </footer>
+        </main>
+
+        <!-- =====================================================
+             ERROR MODAL
+        ====================================================== -->
+        <div id="errorOverlay" class="error-overlay" aria-hidden="true">
+            <div class="error-modal">
+                <div class="error-icon">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M12 8V13"></path>
+                        <path d="M12 17H12.01"></path>
+                        <path d="M10.3 4.4L2.9 17.2C2.3 18.3 3.1 19.7 4.4 19.7H19.6C20.9 19.7 21.7 18.3 21.1 17.2L13.7 4.4C13 3.2 11 3.2 10.3 4.4Z"></path>
+                    </svg>
+                </div>
+
+                <div class="error-copy">
+                    <div class="error-title">Startup failed</div>
+                    <div id="errorMessage" class="error-message">
+                        Unable to start Neemo.
+                    </div>
+                </div>
+
+                <button
+                    id="errorCloseButton"
+                    class="error-close"
+                    type="button"
+                >
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="launcher.js"></script>
+</body>
+</html>

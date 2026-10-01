@@ -2661,7 +2661,7 @@ startNemoBtn.addEventListener(
 
 
         }catch(error){
-            Neemobtnstatus = false;
+            // Neemobtnstatus = false;
 
             console.error(error);
 
@@ -4734,23 +4734,6 @@ loadBtn.addEventListener("click", async () => {
     // ========================================================
     // NEW FIGMA JSON FLOW
     // ========================================================
-    //
-    // Toggle ON
-    //
-    // Button:
-    // Fetch Figma JSON
-    //
-    // Figma URL
-    //      ↓
-    // api.php?action=fetch_figma_json
-    //      ↓
-    // PHP extracts Figma file key
-    //      ↓
-    // Flask :3001/figma/file
-    //      ↓
-    // Figma API
-    //
-    // ========================================================
 
     if (isFigmaKeyMode) {
 
@@ -4778,7 +4761,53 @@ loadBtn.addEventListener("click", async () => {
             );
 
 
-            const data = await res.json();
+            // =================================================
+            // READ RESPONSE AS TEXT FIRST
+            // =================================================
+
+            const responseText =
+                await res.text();
+
+            console.log(
+                "Raw Figma API Response:",
+                responseText
+            );
+
+
+            // =================================================
+            // SAFELY PARSE JSON
+            // =================================================
+
+            let data;
+
+            try {
+
+                data =
+                    JSON.parse(responseText);
+
+            } catch (jsonError) {
+
+                console.error(
+                    "Invalid JSON response:",
+                    jsonError
+                );
+
+                console.error(
+                    "Actual server response:",
+                    responseText
+                );
+
+                stopResponseTimer();
+
+                // Show the ACTUAL server response
+                showFrameError(
+                    responseText ||
+                    "Server returned an invalid response."
+                );
+
+                return;
+            }
+
 
             stopResponseTimer();
 
@@ -4787,37 +4816,40 @@ loadBtn.addEventListener("click", async () => {
             // FIGMA API / FLASK ERROR
             // =================================================
 
-        if (
-    !res.ok ||
-    data.status === "error"
-) {
+            if (
+                !res.ok ||
+                data.status === "error"
+            ) {
 
-    console.error(
-        "Figma Error Data:",
-        data
-    );
+                console.error(
+                    "Figma Error Data:",
+                    data
+                );
 
-    console.error(
-        "Figma Error Message:",
-        data.message ||
-        "Unknown error"
-    );
+                console.error(
+                    "Figma Error Message:",
+                    data.message ||
+                    data.error ||
+                    "Unknown error"
+                );
 
-    showFrameError(
-        data.message ||
-        "Unknown error"
-    );
+                showFrameError(
+                    data.message ||
+                    data.error ||
+                    "Unknown error"
+                );
 
-    return;
-}
+                return;
+            }
+
 
             // =================================================
             // SUCCESS
             // =================================================
 
-           displayResponse(
-    JSON.stringify(data, null, 2)
-);
+            displayResponse(
+                JSON.stringify(data, null, 2)
+            );
 
 
             // If backend provides a file key,
@@ -4866,13 +4898,6 @@ loadBtn.addEventListener("click", async () => {
     // ========================================================
     // EXISTING LOAD FRAMES LOGIC
     // ========================================================
-    //
-    // THIS IS YOUR ORIGINAL LOGIC.
-    // It remains unchanged.
-    //
-    // Toggle OFF → Feed URL → load_frames
-    //
-    // ========================================================
 
     setLoading(
         '<p style="margin-top:-43px">Loading Frames...</p>'
@@ -4898,23 +4923,80 @@ loadBtn.addEventListener("click", async () => {
         );
 
 
-        const data = await res.json();
+        // =================================================
+        // READ RESPONSE AS TEXT FIRST
+        // =================================================
+
+        const responseText =
+            await res.text();
+
+        console.log(
+            "Raw Load Frames Response:",
+            responseText
+        );
+
+
+        // =================================================
+        // SAFELY PARSE JSON
+        // =================================================
+
+        let data;
+
+        try {
+
+            data =
+                JSON.parse(responseText);
+
+        } catch (jsonError) {
+
+            console.error(
+                "Invalid JSON response:",
+                jsonError
+            );
+
+            console.error(
+                "Actual server response:",
+                responseText
+            );
+
+            stopResponseTimer();
+
+            showFrameError(
+                responseText ||
+                "Server returned an invalid response."
+            );
+
+            return;
+        }
+
 
         stopResponseTimer();
 
 
-        // Flask returned an error
+        // =================================================
+        // FLASK RETURNED AN ERROR
+        // =================================================
 
-        if (!res.ok || data.status === "error") {
+        if (
+            !res.ok ||
+            data.status === "error"
+        ) {
 
             console.error(
-                "Flask Error:",
+                "Flask Error Data:",
+                data
+            );
+
+            console.error(
+                "Flask Error Message:",
                 data.message ||
+                data.error ||
                 "Unknown error"
             );
 
             showFrameError(
                 data.message ||
+                data.error ||
                 "Unknown error"
             );
 
@@ -4922,12 +5004,13 @@ loadBtn.addEventListener("click", async () => {
         }
 
 
-        // Normal successful response
+        // =================================================
+        // NORMAL SUCCESSFUL RESPONSE
+        // =================================================
 
-                 displayResponse(
-    JSON.stringify(data, null, 2)
-);
-
+        displayResponse(
+            JSON.stringify(data, null, 2)
+        );
 
 
         currentFileKey =
